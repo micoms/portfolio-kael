@@ -15,31 +15,69 @@ interface ExperienceCardProps {
   experience: Experience;
 }
 
-const parseDescription = (text: string): string => {
-  return text.replace(/\*(.*?)\*/g, '<b>$1</b>');
-};
+function BoldText({ text }: { text: string }) {
+  const parts = text.split(/(\*.*?\*)/);
+  return (
+    <>
+      {parts.map((part, i) => {
+        if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
+          return (
+            <b key={i} style={{ color: 'var(--ink)', fontWeight: 600 }}>
+              {part.slice(1, -1)}
+            </b>
+          );
+        }
+        return <span key={i}>{part}</span>;
+      })}
+    </>
+  );
+}
 
 export function ExperienceCard({ experience }: ExperienceCardProps) {
   return (
-    <div className="flex flex-col gap-4">
+    <div
+      style={{
+        padding: '28px 26px',
+        background: 'var(--bone)',
+        borderRadius: 18,
+        boxShadow: 'var(--shadow), inset 0 0 0 1px rgba(21, 20, 15, 0.06)',
+      }}
+    >
       {/* Company Header */}
-      <div className="flex flex-col gap-2 md:flex-row md:justify-between">
-        {/* Left Side */}
-        <div className="flex items-center gap-4">
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 12,
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          marginBottom: 16,
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <Image
             src={experience.image}
             alt={experience.company}
-            width={100}
-            height={100}
-            className="size-12 rounded-md"
+            width={40}
+            height={40}
+            style={{ borderRadius: 10, objectFit: 'cover' }}
           />
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
+          <div>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                gap: 8,
+              }}
+            >
               <h3
-                className={cn(
-                  'text-lg font-bold',
-                  experience.isBlur ? 'blur-[5px]' : 'blur-none',
-                )}
+                style={{
+                  fontFamily: 'var(--sans)',
+                  fontSize: 18,
+                  fontWeight: 700,
+                  color: 'var(--ink)',
+                }}
               >
                 {experience.company}
               </h3>
@@ -49,7 +87,12 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
                     <Link
                       href={experience.website}
                       target="_blank"
-                      className="size-4 text-neutral-500"
+                      style={{
+                        width: 14,
+                        height: 14,
+                        color: 'var(--ink-faint)',
+                        transition: 'color 160ms ease',
+                      }}
                     >
                       <Website />
                     </Link>
@@ -63,7 +106,12 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
                     <Link
                       href={experience.x}
                       target="_blank"
-                      className="size-4 text-neutral-500"
+                      style={{
+                        width: 14,
+                        height: 14,
+                        color: 'var(--ink-faint)',
+                        transition: 'color 160ms ease',
+                      }}
                     >
                       <X />
                     </Link>
@@ -77,7 +125,12 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
                     <Link
                       href={experience.linkedin}
                       target="_blank"
-                      className="size-4 text-neutral-500"
+                      style={{
+                        width: 14,
+                        height: 14,
+                        color: 'var(--ink-faint)',
+                        transition: 'color 160ms ease',
+                      }}
                     >
                       <LinkedIn />
                     </Link>
@@ -91,7 +144,12 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
                     <Link
                       href={experience.github}
                       target="_blank"
-                      className="size-4 text-neutral-500"
+                      style={{
+                        width: 14,
+                        height: 14,
+                        color: 'var(--ink-faint)',
+                        transition: 'color 160ms ease',
+                      }}
                     >
                       <Github />
                     </Link>
@@ -100,53 +158,111 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
                 </Tooltip>
               )}
               {experience.isCurrent && (
-                <div className="flex items-center gap-1 rounded-md border-green-300 bg-green-500/10 px-2 py-1 text-xs">
-                  <div className="size-2 animate-pulse rounded-full bg-green-500"></div>
-                  Working
-                </div>
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    padding: '3px 10px',
+                    borderRadius: 999,
+                    background: 'var(--olive)',
+                    color: '#fff',
+                    fontFamily: 'var(--sans)',
+                    fontSize: 11,
+                    fontWeight: 600,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: '50%',
+                      background: '#fff',
+                      animation: 'pulse 2.4s ease-in-out infinite',
+                    }}
+                  />
+                  Current
+                </span>
               )}
             </div>
-            <p>{experience.position}</p>
+            <p
+              style={{
+                fontFamily: 'var(--sans)',
+                fontSize: 14,
+                color: 'var(--coral)',
+                fontWeight: 600,
+                marginTop: 2,
+              }}
+            >
+              {experience.position}
+            </p>
           </div>
         </div>
-        {/* Right Side */}
-        <div className="text-secondary flex flex-col md:text-right">
-          <p>
-            {experience.startDate} -{' '}
+        <div
+          style={{
+            textAlign: 'right',
+            fontFamily: 'var(--mono)',
+            fontSize: 12,
+            color: 'var(--ink-faint)',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          <div>
+            {experience.startDate} &ndash;{' '}
             {experience.isCurrent ? 'Present' : experience.endDate}
-          </p>
-          <p>{experience.location}</p>
-        </div>
-      </div>
-
-      {/* Technologies */}
-      <div>
-        <h4 className="text-md mt-4 mb-2 font-semibold">Technologies</h4>
-        <div className="flex flex-wrap gap-2">
-          {experience.technologies.map((technology, techIndex: number) => (
-            <Skill
-              key={techIndex}
-              name={technology.name}
-              href={technology.href}
-            >
-              {technology.icon}
-            </Skill>
-          ))}
+          </div>
+          <div style={{ fontSize: 11, marginTop: 2 }}>
+            {experience.location}
+          </div>
         </div>
       </div>
 
       {/* Description */}
-      <div className="text-secondary flex flex-col">
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 8,
+          marginBottom: 16,
+        }}
+      >
         {experience.description.map(
           (description: string, descIndex: number) => (
             <p
               key={descIndex}
-              dangerouslySetInnerHTML={{
-                __html: `• ${parseDescription(description)}`,
+              style={{
+                fontFamily: 'var(--body)',
+                fontSize: '13.5px',
+                lineHeight: 1.55,
+                color: 'var(--ink-mute)',
+                paddingLeft: 16,
+                position: 'relative',
               }}
-            />
+            >
+              <span
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: 8,
+                  width: 4,
+                  height: 4,
+                  borderRadius: '50%',
+                  background: 'var(--coral)',
+                }}
+              />
+              <BoldText text={description} />
+            </p>
           ),
         )}
+      </div>
+
+      {/* Technologies */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+        {experience.technologies.map((technology, techIndex: number) => (
+          <Skill key={techIndex} name={technology.name} href={technology.href}>
+            {technology.icon}
+          </Skill>
+        ))}
       </div>
     </div>
   );

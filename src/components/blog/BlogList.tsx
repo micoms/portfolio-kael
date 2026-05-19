@@ -10,9 +10,34 @@ interface BlogListProps {
 export function BlogList({ posts, className = '' }: BlogListProps) {
   if (posts.length === 0) {
     return (
-      <div className="flex min-h-[400px] flex-col items-center justify-center space-y-4 text-center">
-        <h2 className="text-2xl font-semibold">No blog posts found</h2>
-        <p className="text-muted-foreground">
+      <div
+        style={{
+          minHeight: 400,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+          gap: 16,
+        }}
+      >
+        <h2
+          style={{
+            fontFamily: 'var(--sans)',
+            fontSize: 22,
+            fontWeight: 700,
+            color: 'var(--ink)',
+          }}
+        >
+          No blog posts found
+        </h2>
+        <p
+          style={{
+            fontFamily: 'var(--body)',
+            fontSize: 14,
+            color: 'var(--ink-mute)',
+          }}
+        >
           Check back later for new content!
         </p>
       </div>
@@ -20,7 +45,14 @@ export function BlogList({ posts, className = '' }: BlogListProps) {
   }
 
   return (
-    <div className={`grid gap-6 md:grid-cols-2 lg:grid-cols-2 ${className}`}>
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        gap: 22,
+      }}
+      className={className}
+    >
       {posts.map((post) => (
         <BlogCard key={post.slug} post={post} />
       ))}

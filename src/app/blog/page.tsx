@@ -1,6 +1,5 @@
 import Container from '@/components/common/Container';
-import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
+import { SectionRule } from '@/components/common/SectionRule';
 import { generateMetadata as getMetadata } from '@/config/Meta';
 import { getAllTags, getPublishedBlogPosts } from '@/lib/blog';
 import { Metadata } from 'next';
@@ -30,50 +29,93 @@ export const generateMetadata = (): Metadata => {
 function BlogPageLoading() {
   return (
     <Container className="py-16">
-      <div className="space-y-8">
-        {/* Header Skeleton */}
-        <div className="space-y-4 text-center">
-          <Skeleton className="mx-auto h-12 w-32" />
-          <Skeleton className="mx-auto h-6 w-96" />
-        </div>
-
-        <Separator />
-
-        {/* Tags Skeleton */}
-        <div className="space-y-4">
-          <Skeleton className="h-6 w-32" />
-          <div className="flex flex-wrap gap-2">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Skeleton key={i} className="h-8 w-20" />
-            ))}
-          </div>
-        </div>
-
-        {/* Blog Posts Skeleton */}
-        <div className="space-y-6">
-          <Skeleton className="h-8 w-48" />
-          <div className="space-y-4">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="space-y-2">
-                <Skeleton className="h-6 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-                <Skeleton className="h-4 w-2/3" />
-              </div>
-            ))}
-          </div>
-        </div>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: 200,
+          fontFamily: 'var(--sans)',
+          fontSize: 13,
+          color: 'var(--ink-faint)',
+        }}
+      >
+        Loading...
       </div>
     </Container>
   );
 }
 
-export default function BlogPage() {
-  const allPosts = getPublishedBlogPosts();
-  const allTags = getAllTags();
+export default async function BlogPage() {
+  const allPosts = await getPublishedBlogPosts();
+  const allTags = await getAllTags();
 
   return (
-    <Suspense fallback={<BlogPageLoading />}>
-      <BlogPageClient initialPosts={allPosts} initialTags={allTags} />
-    </Suspense>
+    <main>
+      <section style={{ position: 'relative', padding: '80px 0 40px' }}>
+        <Container>
+          <SectionRule
+            roman="B."
+            left="Blog / All Posts"
+            middle="Writing & thoughts"
+            right="-- / --"
+          />
+          <div data-reveal>
+            <span className="label">
+              Blog <span className="ix">&middot; All</span>
+            </span>
+            <h1
+              style={{
+                fontFamily: 'var(--sans)',
+                fontWeight: 800,
+                letterSpacing: '-0.028em',
+                color: 'var(--ink)',
+                lineHeight: 1.0,
+                fontSize: 'clamp(40px, 5vw, 66px)',
+                margin: '22px 0 20px',
+              }}
+            >
+              Thoughts, tutorials, and{' '}
+              <em
+                style={{
+                  fontFamily: 'var(--serif)',
+                  fontStyle: 'italic',
+                  fontWeight: 500,
+                }}
+              >
+                insights
+              </em>
+              <span style={{ color: 'var(--coral)' }}>.</span>
+            </h1>
+          </div>
+        </Container>
+      </section>
+      <Suspense fallback={<BlogPageLoading />}>
+        <BlogPageClient
+          initialPosts={allPosts.map(
+            (p: {
+              slug: string;
+              title: string;
+              description: string;
+              image: string;
+              tags: string[];
+              date: Date;
+              isPublished: boolean;
+            }) => ({
+              slug: p.slug,
+              frontmatter: {
+                title: p.title,
+                description: p.description,
+                image: p.image,
+                tags: p.tags,
+                date: p.date.toISOString(),
+                isPublished: p.isPublished,
+              },
+            }),
+          )}
+          initialTags={allTags}
+        />
+      </Suspense>
+    </main>
   );
 }

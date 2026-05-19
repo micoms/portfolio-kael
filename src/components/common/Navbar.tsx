@@ -1,41 +1,293 @@
-import { navbarConfig } from '@/config/Navbar';
-import { Link } from 'next-view-transitions';
-import Image from 'next/image';
-import React from 'react';
+'use client';
 
+import { navbarConfig } from '@/config/Navbar';
+import { Menu } from 'lucide-react';
+import { Link } from 'next-view-transitions';
+import React, { useEffect, useState } from 'react';
+
+import { Button } from '../ui/button';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '../ui/sheet';
 import Container from './Container';
-import { ThemeToggleButton } from './ThemeSwitch';
 
 export default function Navbar() {
+  const [isHidden, setIsHidden] = useState(false);
+  const [lastY, setLastY] = useState(0);
+
+  useEffect(() => {
+    const SHOW_TOP = 100;
+    const DELTA = 6;
+    let prevY = window.scrollY || 0;
+
+    const onScroll = () => {
+      const y = window.scrollY || 0;
+      const d = y - prevY;
+      if (y <= SHOW_TOP) {
+        setIsHidden(false);
+      } else if (d > DELTA) {
+        setIsHidden(true);
+      } else if (d < -DELTA) {
+        setIsHidden(false);
+      }
+      prevY = y;
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
-    <Container className="sticky top-0 z-20 rounded-md py-4 backdrop-blur-sm">
-      <div className="flex items-center justify-between px-6">
-        <div className="flex items-baseline gap-4">
-          <Link href="/">
-            <Image
-              className="h-12 w-12 rounded-md border border-gray-200 bg-blue-300 transition-all duration-300 ease-in-out hover:scale-90 dark:bg-yellow-300"
-              src={navbarConfig.logo.src}
-              alt={navbarConfig.logo.alt}
-              width={navbarConfig.logo.width}
-              height={navbarConfig.logo.height}
-            />
-          </Link>
-          <div className="flex items-center justify-center gap-4">
-            {navbarConfig.navItems.map((item) => (
-              <Link
-                className="transition-all duration-300 ease-in-out hover:underline hover:decoration-2 hover:underline-offset-4"
-                key={item.label}
-                href={item.href}
+    <header className={`nav-headroom${isHidden ? 'is-hidden' : ''}`}>
+      <Container>
+        <div
+          className="nav-inner"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 24,
+          }}
+        >
+          <Link
+            href="/"
+            className="brand"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 14,
+              fontFamily: 'var(--sans)',
+              fontWeight: 700,
+              letterSpacing: '-0.01em',
+              color: 'var(--ink)',
+              textDecoration: 'none',
+              fontSize: 18,
+            }}
+          >
+            <span
+              className="brand-mark"
+              style={{
+                width: 36,
+                height: 36,
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '1.5px solid var(--ink)',
+                borderRadius: '50%',
+                fontFamily: 'var(--serif)',
+                fontStyle: 'italic',
+                fontSize: 17,
+                color: 'var(--ink)',
+                background: 'transparent',
+              }}
+            >
+              M
+            </span>
+            <span>Mikael Macabali</span>
+            <span
+              className="brand-meta"
+              style={{
+                fontFamily: 'var(--sans)',
+                fontSize: 10,
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                color: 'var(--ink-faint)',
+                lineHeight: 1.3,
+                marginLeft: 4,
+                borderLeft: '1px solid var(--line)',
+                paddingLeft: 14,
+              }}
+            >
+              <b
+                style={{
+                  display: 'block',
+                  color: 'var(--ink)',
+                  fontWeight: 600,
+                }}
               >
-                {item.label}
-              </Link>
-            ))}
+                Full-Stack Developer
+              </b>
+              Manila / Remote
+            </span>
+          </Link>
+
+          <nav>
+            <ul
+              className="nav-links"
+              style={{ display: 'flex', gap: 38, listStyle: 'none' }}
+            >
+              {navbarConfig.navItems.map((item) => (
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
+                    style={{
+                      color: 'var(--ink)',
+                      textDecoration: 'none',
+                      fontFamily: 'var(--sans)',
+                      fontSize: 14,
+                      fontWeight: 500,
+                      transition: 'color 0.18s ease',
+                      position: 'relative',
+                    }}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link
+                  href="/contact"
+                  style={{
+                    color: 'var(--ink)',
+                    textDecoration: 'none',
+                    fontFamily: 'var(--sans)',
+                    fontSize: 14,
+                    fontWeight: 500,
+                    transition: 'color 0.18s ease',
+                  }}
+                >
+                  Contact
+                </Link>
+              </li>
+            </ul>
+          </nav>
+
+          <div
+            className="nav-side"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 18 }}
+          >
+            <a
+              className="nav-cta"
+              href="https://github.com/mikaelmacabali"
+              target="_blank"
+              rel="noreferrer noopener"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 10,
+                padding: '9px 16px',
+                borderRadius: 999,
+                background: 'var(--ink)',
+                color: 'var(--paper)',
+                fontFamily: 'var(--sans)',
+                fontSize: 13,
+                fontWeight: 500,
+                textDecoration: 'none',
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+              }}
+            >
+              GitHub
+            </a>
+            <span
+              className="status-dot"
+              aria-hidden="true"
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: '50%',
+                border: '1px solid var(--line)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <span
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: '50%',
+                  background: 'var(--coral)',
+                }}
+              />
+            </span>
+
+            {/* Mobile menu */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-10 sm:hidden"
+                  aria-label="Open menu"
+                  style={{ color: 'var(--ink)' }}
+                >
+                  <Menu className="size-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side="right"
+                className="w-[280px]"
+                style={{
+                  background: 'var(--paper)',
+                  borderLeft: '1px solid var(--line)',
+                }}
+              >
+                <SheetHeader>
+                  <SheetTitle
+                    style={{
+                      fontFamily: 'var(--sans)',
+                      fontWeight: 700,
+                      letterSpacing: '-0.01em',
+                      color: 'var(--ink)',
+                    }}
+                  >
+                    Mikael Macabali
+                  </SheetTitle>
+                </SheetHeader>
+                <nav className="flex flex-col gap-1 px-4">
+                  {navbarConfig.navItems.map((item) => (
+                    <SheetClose asChild key={item.label}>
+                      <Link
+                        href={item.href}
+                        style={{
+                          fontFamily: 'var(--sans)',
+                          fontSize: 14,
+                          fontWeight: 500,
+                          color: 'var(--ink-soft)',
+                          padding: '10px 12px',
+                          borderRadius: 8,
+                          textDecoration: 'none',
+                          transition: 'color 160ms ease',
+                        }}
+                      >
+                        {item.label}
+                      </Link>
+                    </SheetClose>
+                  ))}
+                  <div
+                    style={{
+                      borderTop: '1px solid var(--line)',
+                      margin: '8px 0',
+                    }}
+                  />
+                  <SheetClose asChild>
+                    <Link
+                      href="/contact"
+                      style={{
+                        fontFamily: 'var(--sans)',
+                        fontSize: 14,
+                        fontWeight: 500,
+                        color: 'var(--ink-soft)',
+                        padding: '10px 12px',
+                        borderRadius: 8,
+                        textDecoration: 'none',
+                      }}
+                    >
+                      Contact
+                    </Link>
+                  </SheetClose>
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <ThemeToggleButton variant="circle" start="top-right" blur />
-        </div>
-      </div>
-    </Container>
+      </Container>
+    </header>
   );
 }

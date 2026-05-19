@@ -1,6 +1,6 @@
 import Container from '@/components/common/Container';
+import { SectionRule } from '@/components/common/SectionRule';
 import CheckCircle from '@/components/svgs/CheckCircle';
-import { Separator } from '@/components/ui/separator';
 import { generateMetadata as getMetadata } from '@/config/Meta';
 import { settingsJson, steps } from '@/config/Setup';
 import { Download, ExternalLink, FileText } from 'lucide-react';
@@ -25,207 +25,512 @@ export const metadata: Metadata = {
 
 export default function SetupPage() {
   return (
-    <Container className="py-8 md:py-16">
-      <div className="space-y-6 md:space-y-8">
-        {/* Header */}
-        <div className="space-y-3 text-center md:space-y-4">
-          <h1 className="text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
-            Setup
-          </h1>
-          <p className="text-muted-foreground mx-auto max-w-2xl px-4 text-base md:text-lg">
-            Complete guide to setting up VS Code with my preferred
-            configuration, extensions, and fonts.
-          </p>
-        </div>
-        <Separator />
+    <main>
+      <section style={{ position: 'relative', padding: '80px 0 40px' }}>
+        <Container>
+          <SectionRule
+            roman="S."
+            left="Setup / Dev Environment"
+            middle="VS Code configuration"
+            right="-- / --"
+          />
+          <div data-reveal>
+            <span className="label">
+              Setup <span className="ix">&middot; N&ordm; 01</span>
+            </span>
+            <h1
+              style={{
+                fontFamily: 'var(--sans)',
+                fontWeight: 800,
+                letterSpacing: '-0.028em',
+                color: 'var(--ink)',
+                lineHeight: 1.0,
+                fontSize: 'clamp(40px, 5vw, 66px)',
+                margin: '22px 0 20px',
+              }}
+            >
+              Complete{' '}
+              <em
+                style={{
+                  fontFamily: 'var(--serif)',
+                  fontStyle: 'italic',
+                  fontWeight: 500,
+                }}
+              >
+                setup
+              </em>{' '}
+              guide<span style={{ color: 'var(--coral)' }}>.</span>
+            </h1>
+            <p
+              style={{
+                fontFamily: 'var(--body)',
+                fontSize: 16,
+                lineHeight: 1.55,
+                color: 'var(--ink-soft)',
+                maxWidth: '48ch',
+              }}
+            >
+              Complete guide to setting up VS Code with my preferred
+              configuration, extensions, and fonts.
+            </p>
+          </div>
+        </Container>
+      </section>
 
-        {/* Steps */}
-        <div className="space-y-8 md:space-y-12">
-          {steps.map((step) => (
-            <div key={step.id} className="space-y-4 md:space-y-6">
-              {/* Step Header */}
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-                <div className="bg-muted flex w-fit items-center justify-center rounded-md border border-black/10 px-3 py-2 text-[#736F70] dark:border-white/10">
-                  <span className="text-secondary text-sm font-medium">
+      <Container>
+        <div style={{ paddingBottom: 80 }}>
+          {/* Steps */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 48 }}>
+            {steps.map((step) => (
+              <div
+                key={step.id}
+                style={{ display: 'flex', flexDirection: 'column', gap: 20 }}
+              >
+                {/* Step Header */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                  <div
+                    style={{
+                      padding: '6px 12px',
+                      background: 'var(--bone)',
+                      borderRadius: 8,
+                      fontFamily: 'var(--sans)',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: 'var(--ink-faint)',
+                      letterSpacing: '0.04em',
+                    }}
+                  >
                     Step {step.id}
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="bg-muted flex items-center justify-center rounded-md border border-black/10 p-2 text-[#736F70] dark:border-white/10">
+                  </div>
+                  <div
+                    style={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: 10,
+                      background: 'var(--bone)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'var(--ink)',
+                    }}
+                  >
                     {step.icon}
                   </div>
-                  <h2 className="text-xl font-semibold md:text-2xl">
+                  <h2
+                    style={{
+                      fontFamily: 'var(--sans)',
+                      fontSize: 22,
+                      fontWeight: 700,
+                      color: 'var(--ink)',
+                    }}
+                  >
                     {step.title}
                   </h2>
                 </div>
-              </div>
 
-              {/* Step Content */}
-              <div className="ml-4 space-y-3 sm:ml-8 md:ml-16 md:space-y-4">
-                {step.content.map((item, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    {item.type === 'download' && (
-                      <Link
-                        href={item.href || '#'}
-                        download
-                        className="bg-muted/50 hover:bg-muted/70 flex w-full flex-col gap-3 rounded-lg border border-black/10 p-3 transition-colors sm:flex-row sm:items-center md:p-4 dark:border-white/10"
-                      >
-                        <Download className="text-muted-foreground size-4 flex-shrink-0" />
-                        <div className="flex-1">
-                          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
-                            <span className="text-sm font-medium">
-                              {item.name}
-                            </span>
-                            <ExternalLink className="text-muted-foreground size-3" />
-                          </div>
-                          <p className="text-muted-foreground mt-1 text-sm">
-                            {item.description}
-                          </p>
-                        </div>
-                      </Link>
-                    )}
-
-                    {item.type === 'instruction' && (
-                      <div className="flex items-center gap-3">
-                        <p className="text-secondary text-sm">{item.text}</p>
-                      </div>
-                    )}
-
-                    {item.type === 'shortcut' && (
-                      <div className="bg-accent/50 flex w-full items-center gap-3 rounded-lg border border-black/10 p-3 dark:border-white/10">
-                        <kbd className="bg-muted rounded border border-black/20 px-2 py-1 font-mono text-xs break-all dark:border-white/20">
-                          {item.text}
-                        </kbd>
-                      </div>
-                    )}
-
-                    {item.type === 'prompt' && (
-                      <div className="bg-muted/50 flex w-full items-center gap-3 rounded-lg border border-black/10 p-3 dark:border-white/10">
-                        <FileText className="text-muted-foreground size-4 flex-shrink-0" />
-                        <code className="text-secondary font-mono text-sm break-all">
-                          {item.text}
-                        </code>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-
-          {/* Settings JSON Section */}
-          <div className="space-y-4 md:space-y-6">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-              <div className="bg-muted flex w-fit items-center justify-center rounded-md border border-black/10 p-2 text-[#736F70] dark:border-white/10">
-                <FileText className="size-4" />
-              </div>
-              <h3 className="text-lg font-semibold md:text-xl">
-                settings.json
-              </h3>
-            </div>
-
-            <div className="ml-4 sm:ml-8 md:ml-12">
-              <div className="bg-muted/30 overflow-hidden rounded-lg border border-black/10 dark:border-white/10">
-                <div className="bg-muted flex items-center justify-between border-b border-black/10 px-3 py-2 md:px-4 dark:border-white/10">
-                  <span className="text-sm font-medium">settings.json</span>
-                  <button className="text-muted-foreground hover:text-primary text-xs transition-colors">
-                    Copy
-                  </button>
-                </div>
-                <div className="overflow-x-auto">
-                  <pre className="min-w-full p-3 text-xs md:p-4">
-                    <code className="language-json text-secondary block font-mono leading-relaxed whitespace-pre">
-                      {settingsJson.split('\n').map((line, index) => {
-                        const trimmedLine = line.trim();
-                        if (trimmedLine.startsWith('//')) {
-                          return (
+                {/* Step Content */}
+                <div
+                  style={{
+                    paddingLeft: 52,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 12,
+                  }}
+                >
+                  {step.content.map((item, index) => (
+                    <div key={index}>
+                      {item.type === 'download' && (
+                        <Link
+                          href={item.href || '#'}
+                          download
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 14,
+                            padding: '14px 18px',
+                            background: 'var(--bone)',
+                            borderRadius: 12,
+                            textDecoration: 'none',
+                            color: 'var(--ink-soft)',
+                            border: '1px solid var(--line)',
+                            transition: 'background 160ms ease',
+                          }}
+                        >
+                          <Download
+                            size={16}
+                            style={{ color: 'var(--ink-faint)', flexShrink: 0 }}
+                          />
+                          <div style={{ flex: 1 }}>
                             <div
-                              key={index}
-                              className="text-muted-foreground/60 italic"
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 8,
+                              }}
                             >
-                              {line}
-                            </div>
-                          );
-                        } else if (
-                          trimmedLine.includes(':') &&
-                          trimmedLine.includes('"')
-                        ) {
-                          const [key, ...valueParts] = line.split(':');
-                          const value = valueParts.join(':');
-                          return (
-                            <div key={index}>
-                              <span className="text-secondary font-medium">
-                                {key}
+                              <span
+                                style={{
+                                  fontFamily: 'var(--sans)',
+                                  fontSize: 13,
+                                  fontWeight: 600,
+                                  color: 'var(--ink)',
+                                }}
+                              >
+                                {item.name}
                               </span>
-                              <span className="text-muted-foreground">:</span>
-                              <span className="text-muted-foreground">
-                                {value}
-                              </span>
+                              <ExternalLink
+                                size={12}
+                                style={{ color: 'var(--ink-faint)' }}
+                              />
                             </div>
-                          );
-                        } else {
-                          return (
-                            <div key={index} className="text-muted-foreground">
-                              {line}
-                            </div>
-                          );
-                        }
-                      })}
-                    </code>
-                  </pre>
+                            <p
+                              style={{
+                                fontFamily: 'var(--body)',
+                                fontSize: 12,
+                                color: 'var(--ink-mute)',
+                                marginTop: 4,
+                              }}
+                            >
+                              {item.description}
+                            </p>
+                          </div>
+                        </Link>
+                      )}
+
+                      {item.type === 'instruction' && (
+                        <p
+                          style={{
+                            fontFamily: 'var(--body)',
+                            fontSize: 14,
+                            color: 'var(--ink-mute)',
+                            lineHeight: 1.55,
+                          }}
+                        >
+                          {item.text}
+                        </p>
+                      )}
+
+                      {item.type === 'shortcut' && (
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 12,
+                            padding: '12px 16px',
+                            background: 'var(--bone)',
+                            borderRadius: 10,
+                            border: '1px solid var(--line)',
+                          }}
+                        >
+                          <kbd
+                            style={{
+                              background: 'var(--paper-dark)',
+                              borderRadius: 4,
+                              border: '1px solid var(--line)',
+                              padding: '3px 8px',
+                              fontFamily: 'var(--mono)',
+                              fontSize: 11,
+                              color: 'var(--ink-mute)',
+                            }}
+                          >
+                            {item.text}
+                          </kbd>
+                        </div>
+                      )}
+
+                      {item.type === 'prompt' && (
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 12,
+                            padding: '12px 16px',
+                            background: 'var(--bone)',
+                            borderRadius: 10,
+                            border: '1px solid var(--line)',
+                          }}
+                        >
+                          <FileText
+                            size={16}
+                            style={{ color: 'var(--ink-faint)', flexShrink: 0 }}
+                          />
+                          <code
+                            style={{
+                              fontFamily: 'var(--mono)',
+                              fontSize: 13,
+                              color: 'var(--ink-mute)',
+                              wordBreak: 'break-all',
+                            }}
+                          >
+                            {item.text}
+                          </code>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            {/* Settings JSON Section */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 10,
+                    background: 'var(--bone)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--ink)',
+                  }}
+                >
+                  <FileText size={16} />
+                </div>
+                <h3
+                  style={{
+                    fontFamily: 'var(--sans)',
+                    fontSize: 22,
+                    fontWeight: 700,
+                    color: 'var(--ink)',
+                  }}
+                >
+                  settings.json
+                </h3>
+              </div>
+
+              <div style={{ paddingLeft: 52 }}>
+                <div
+                  style={{
+                    background: 'var(--ink)',
+                    borderRadius: 12,
+                    overflow: 'hidden',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      borderBottom: '1px solid rgba(247, 241, 222, 0.1)',
+                      padding: '10px 16px',
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: 'var(--sans)',
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: 'var(--paper)',
+                      }}
+                    >
+                      settings.json
+                    </span>
+                    <button
+                      style={{
+                        fontFamily: 'var(--sans)',
+                        fontSize: 11,
+                        color: 'var(--paper-faint)',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <div style={{ overflowX: 'auto', padding: '16px 20px' }}>
+                    <pre
+                      style={{
+                        fontFamily: 'var(--mono)',
+                        fontSize: 12,
+                        lineHeight: 1.7,
+                        color: 'var(--paper)',
+                        whiteSpace: 'pre',
+                        margin: 0,
+                      }}
+                    >
+                      <code>
+                        {settingsJson.split('\n').map((line, index) => {
+                          const trimmedLine = line.trim();
+                          if (trimmedLine.startsWith('//')) {
+                            return (
+                              <div
+                                key={index}
+                                style={{
+                                  color: 'var(--ink-faint)',
+                                  fontStyle: 'italic',
+                                }}
+                              >
+                                {line}
+                              </div>
+                            );
+                          } else if (
+                            trimmedLine.includes(':') &&
+                            trimmedLine.includes('"')
+                          ) {
+                            const [key, ...valueParts] = line.split(':');
+                            const value = valueParts.join(':');
+                            return (
+                              <div key={index}>
+                                <span
+                                  style={{
+                                    fontWeight: 600,
+                                    color: 'var(--paper)',
+                                  }}
+                                >
+                                  {key}
+                                </span>
+                                <span style={{ color: 'var(--ink-faint)' }}>
+                                  :
+                                </span>
+                                <span style={{ color: 'var(--ink-faint)' }}>
+                                  {value}
+                                </span>
+                              </div>
+                            );
+                          } else {
+                            return (
+                              <div
+                                key={index}
+                                style={{ color: 'var(--ink-faint)' }}
+                              >
+                                {line}
+                              </div>
+                            );
+                          }
+                        })}
+                      </code>
+                    </pre>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Final Steps */}
-          <div className="space-y-4 md:space-y-6">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-              <div className="bg-muted flex w-fit items-center justify-center rounded-md border border-black/10 px-3 py-2 text-[#736F70] dark:border-white/10">
-                <span className="text-secondary text-sm font-medium">
+            {/* Final Steps */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <div
+                  style={{
+                    padding: '6px 12px',
+                    background: 'var(--bone)',
+                    borderRadius: 8,
+                    fontFamily: 'var(--sans)',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: 'var(--ink-faint)',
+                    letterSpacing: '0.04em',
+                  }}
+                >
                   Final
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="bg-muted flex items-center justify-center rounded-md border border-black/10 p-2 text-[#736F70] dark:border-white/10">
-                  <CheckCircle className="text-secondary size-4" />
                 </div>
-                <h2 className="text-xl font-semibold md:text-2xl">
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 10,
+                    background: 'var(--bone)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--ink)',
+                  }}
+                >
+                  <CheckCircle className="size-4" />
+                </div>
+                <h2
+                  style={{
+                    fontFamily: 'var(--sans)',
+                    fontSize: 22,
+                    fontWeight: 700,
+                    color: 'var(--ink)',
+                  }}
+                >
                   Complete Setup
                 </h2>
               </div>
-            </div>
 
-            <div className="ml-4 space-y-3 sm:ml-8 md:ml-16 md:space-y-4">
-              <div className="flex items-center gap-3">
-                <p className="text-secondary text-sm">
+              <div
+                style={{
+                  paddingLeft: 52,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 12,
+                }}
+              >
+                <p
+                  style={{
+                    fontFamily: 'var(--body)',
+                    fontSize: 14,
+                    color: 'var(--ink-mute)',
+                  }}
+                >
                   Paste the code in the settings.json file in VS Code
                 </p>
-              </div>
-
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
-                <p className="text-secondary text-sm">
-                  Save the settings.json file
-                </p>
-                <kbd className="bg-muted w-fit rounded border border-black/20 px-2 py-1 font-mono text-xs dark:border-white/20">
-                  Cmd + S (Mac) / Ctrl + S (Windows)
-                </kbd>
-                <span className="text-secondary text-sm">
-                  and restart VS Code
-                </span>
-              </div>
-
-              <div className="bg-muted/50 mt-4 flex items-center gap-3 rounded-lg border border-black/10 p-3 md:mt-6 md:p-4 dark:border-white/10">
-                <CheckCircle className="text-secondary size-5" />
-                <div className="flex items-center gap-2">
-                  <span className="text-secondary font-medium">Done!</span>
-                  <span className="text-2xl">🚀</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <p
+                    style={{
+                      fontFamily: 'var(--body)',
+                      fontSize: 14,
+                      color: 'var(--ink-mute)',
+                    }}
+                  >
+                    Save the settings.json file
+                  </p>
+                  <kbd
+                    style={{
+                      background: 'var(--bone)',
+                      borderRadius: 4,
+                      border: '1px solid var(--line)',
+                      padding: '3px 8px',
+                      fontFamily: 'var(--mono)',
+                      fontSize: 11,
+                      color: 'var(--ink-mute)',
+                    }}
+                  >
+                    Cmd + S (Mac) / Ctrl + S (Windows)
+                  </kbd>
+                  <span
+                    style={{
+                      fontFamily: 'var(--body)',
+                      fontSize: 14,
+                      color: 'var(--ink-mute)',
+                    }}
+                  >
+                    and restart VS Code
+                  </span>
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    padding: '14px 18px',
+                    background: 'var(--bone)',
+                    borderRadius: 12,
+                    border: '1px solid var(--line)',
+                    marginTop: 16,
+                  }}
+                >
+                  <CheckCircle className="size-5" />
+                  <span
+                    style={{
+                      fontFamily: 'var(--sans)',
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: 'var(--ink)',
+                    }}
+                  >
+                    Done!
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </main>
   );
 }

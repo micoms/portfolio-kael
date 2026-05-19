@@ -28,10 +28,13 @@ interface Message {
   isStreaming?: boolean;
 }
 
+let messageIdCounter = 1;
+const nextId = () => ++messageIdCounter;
+
 const initialMessages: Message[] = [
   {
     id: 1,
-    text: "Hello! I'm Ram's Portfolio Assistant. How can I help you?",
+    text: "Hello! I'm Mikael's Portfolio Assistant. How can I help you?",
     sender: 'bot',
     timestamp: new Date().toLocaleTimeString([], {
       hour: '2-digit',
@@ -69,7 +72,7 @@ const ChatBubble: React.FC = () => {
 
     const messageText = newMessage.trim();
     const userMessage: Message = {
-      id: Date.now(),
+      id: nextId(),
       text: messageText,
       sender: 'user',
       timestamp: new Date().toLocaleTimeString([], {
@@ -83,7 +86,7 @@ const ChatBubble: React.FC = () => {
     setIsLoading(true);
 
     // Create a temporary bot message for streaming
-    const botMessageId = Date.now() + 1;
+    const botMessageId = nextId();
     const botMessage: Message = {
       id: botMessageId,
       text: '',
@@ -101,14 +104,14 @@ const ChatBubble: React.FC = () => {
     await sendMessage(messageText, botMessageId);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
+  const handleSuggestionClick = async (suggestion: string) => {
     // Trigger haptic feedback on mobile devices
     if (isMobile()) {
       triggerHaptic('selection');
@@ -117,7 +120,7 @@ const ChatBubble: React.FC = () => {
     setNewMessage(suggestion);
     // Auto-send the suggestion
     const userMessage: Message = {
-      id: Date.now(),
+      id: nextId(),
       text: suggestion,
       sender: 'user',
       timestamp: new Date().toLocaleTimeString([], {
@@ -130,7 +133,7 @@ const ChatBubble: React.FC = () => {
     setIsLoading(true);
 
     // Create a temporary bot message for streaming
-    const botMessageId = Date.now() + 1;
+    const botMessageId = nextId();
     const botMessage: Message = {
       id: botMessageId,
       text: '',
@@ -145,7 +148,7 @@ const ChatBubble: React.FC = () => {
     setMessages((prev) => [...prev, botMessage]);
 
     // Send the message (reuse the same logic as handleSendMessage)
-    sendMessage(suggestion, botMessageId);
+    await sendMessage(suggestion, botMessageId);
   };
 
   const sendMessage = async (messageText: string, botMessageId: number) => {
@@ -178,7 +181,7 @@ const ChatBubble: React.FC = () => {
         throw new Error('No reader available');
       }
 
-      let accumulatedText = '';
+      const accumulatedTextRef = { current: '' };
 
       while (true) {
         const { done, value } = await reader.read();
@@ -198,24 +201,24 @@ const ChatBubble: React.FC = () => {
               }
 
               if (data.text) {
-                accumulatedText += data.text;
+                accumulatedTextRef.current += data.text;
 
-                // Update the streaming message in real-time
+                const currentText = accumulatedTextRef.current;
                 setMessages((prev) =>
                   prev.map((msg) =>
                     msg.id === botMessageId
-                      ? { ...msg, text: accumulatedText, isStreaming: true }
+                      ? { ...msg, text: currentText, isStreaming: true }
                       : msg,
                   ),
                 );
               }
 
               if (data.done) {
-                // Finalize the message
+                const finalText = accumulatedTextRef.current;
                 setMessages((prev) =>
                   prev.map((msg) =>
                     msg.id === botMessageId
-                      ? { ...msg, text: accumulatedText, isStreaming: false }
+                      ? { ...msg, text: finalText, isStreaming: false }
                       : msg,
                   ),
                 );
@@ -383,7 +386,7 @@ const ChatBubble: React.FC = () => {
             placeholder="Ask me about my work and experience..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyDown}
             disabled={isLoading}
             className="flex-1"
           />

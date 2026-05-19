@@ -1,6 +1,6 @@
 import Container from '@/components/common/Container';
+import { SectionRule } from '@/components/common/SectionRule';
 import { ProjectList } from '@/components/projects/ProjectList';
-import { Separator } from '@/components/ui/separator';
 import { generateMetadata as getMetadata } from '@/config/Meta';
 import { projects } from '@/config/Projects';
 import { Metadata } from 'next';
@@ -22,37 +22,51 @@ export const metadata: Metadata = {
 
 export default function ProjectsPage() {
   return (
-    <Container className="py-16">
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="space-y-4 text-center">
-          <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">
-            Projects
-          </h1>
-          <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
-            My projects and work across different technologies and domains.
-          </p>
-        </div>
-
-        <Separator />
-
-        {/* Projects */}
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold">
-              All Projects
-              {projects.length > 0 && (
-                <span className="text-muted-foreground ml-2 text-sm font-normal">
-                  ({projects.length}{' '}
-                  {projects.length === 1 ? 'project' : 'projects'})
-                </span>
-              )}
-            </h2>
+    <main>
+      <section style={{ position: 'relative', padding: '80px 0 40px' }}>
+        <Container>
+          <SectionRule
+            roman="P."
+            left="Projects / All"
+            middle="Selected work"
+            right={`${projects.length} projects`}
+          />
+          <div data-reveal>
+            <span className="label">
+              Projects <span className="ix">&middot; All</span>
+            </span>
+            <h1
+              style={{
+                fontFamily: 'var(--sans)',
+                fontWeight: 800,
+                letterSpacing: '-0.028em',
+                color: 'var(--ink)',
+                lineHeight: 1.0,
+                fontSize: 'clamp(40px, 5vw, 66px)',
+                margin: '22px 0 20px',
+              }}
+            >
+              All{' '}
+              <em
+                style={{
+                  fontFamily: 'var(--serif)',
+                  fontStyle: 'italic',
+                  fontWeight: 500,
+                }}
+              >
+                projects
+              </em>{' '}
+              and case studies<span style={{ color: 'var(--coral)' }}>.</span>
+            </h1>
           </div>
+        </Container>
+      </section>
 
+      <Container>
+        <div style={{ paddingBottom: 80 }}>
           <ProjectList projects={projects} />
         </div>
-      </div>
-    </Container>
+      </Container>
+    </main>
   );
 }

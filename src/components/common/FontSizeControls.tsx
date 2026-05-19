@@ -14,18 +14,12 @@ import {
 } from '../ui/drawer';
 
 export default function FontSizeControls() {
-  const [fontSize, setFontSize] = useState<number>(16);
-  const { triggerHaptic, isMobile } = useHapticFeedback();
-
-  // Load font size from localStorage on mount
-  useEffect(() => {
+  const [fontSize, setFontSize] = useState<number>(() => {
+    if (typeof window === 'undefined') return 16;
     const savedFontSize = localStorage.getItem('blog-font-size');
-    if (savedFontSize) {
-      const size = parseInt(savedFontSize, 10);
-      setFontSize(size);
-      applyFontSize(size);
-    }
-  }, []);
+    return savedFontSize ? parseInt(savedFontSize, 10) : 16;
+  });
+  const { triggerHaptic, isMobile } = useHapticFeedback();
 
   // Apply font size to the document
   const applyFontSize = (size: number) => {
@@ -36,6 +30,11 @@ export default function FontSizeControls() {
       );
     }
   };
+
+  // Apply font size on mount and when fontSize changes
+  useEffect(() => {
+    applyFontSize(fontSize);
+  }, [fontSize]);
 
   // Save to localStorage and apply
   const updateFontSize = (newSize: number) => {

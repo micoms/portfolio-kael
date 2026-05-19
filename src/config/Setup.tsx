@@ -1,10 +1,14 @@
-import { Download, FileText, Settings } from 'lucide-react';
+import {
+  DownloadSimple,
+  FileText,
+  GearSix,
+} from '@phosphor-icons/react/dist/ssr';
 
 export const steps = [
   {
     id: 1,
     title: 'Download necessary files',
-    icon: <Download className="size-4" />,
+    icon: <DownloadSimple className="size-4" />,
     content: [
       {
         type: 'download',
@@ -62,7 +66,7 @@ export const steps = [
   {
     id: 3,
     title: 'VS Code Settings',
-    icon: <Settings className="size-4" />,
+    icon: <GearSix className="size-4" />,
     content: [
       {
         type: 'instruction',
@@ -88,6 +92,7 @@ export const steps = [
   },
 ];
 
+// Note: This is JSONC (JSON with Comments) — valid in VS Code but not standard JSON.
 export const settingsJson = `{
     "CodeGPT.model": "gpt-4",
     "vscode-edge-devtools.webhint": false,

@@ -1,6 +1,6 @@
 import CertificatesGallery from '@/components/CertificatesGallery';
 import Container from '@/components/common/Container';
-import { Separator } from '@/components/ui/separator';
+import { SectionRule } from '@/components/common/SectionRule';
 import { certificates as configuredCertificates } from '@/config/Achievements';
 import { generateMetadata as getMetadata } from '@/config/Meta';
 import fs from 'fs';
@@ -14,7 +14,6 @@ export const metadata: Metadata = {
 };
 
 export default function CertificatesPage() {
-  // Server-side: auto-discover certificate images placed under public/certificates
   const certDir = path.join(process.cwd(), 'public', 'certificates');
   let discovered: {
     file: string;
@@ -35,15 +34,12 @@ export default function CertificatesPage() {
         }));
     }
   } catch {
-    // ignore errors and render configured certificates only
     discovered = [];
   }
 
-  // Merge configured certificates with discovered ones (configured entries take precedence)
   const configured = Array.isArray(configuredCertificates)
     ? configuredCertificates
     : [];
-  // Build map to avoid duplicates by file path
   const map = new Map<
     string,
     { file: string; title?: string; issuer?: string; date?: string }
@@ -59,38 +55,51 @@ export default function CertificatesPage() {
   const allCertificates = Array.from(map.values());
 
   return (
-    <Container className="py-16">
-      <div className="space-y-8">
-        <div className="space-y-4 text-center">
-          <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">
-            Certificates & Achievements
-          </h1>
-          <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
-            A curated list of my certificates and notable achievements.
-          </p>
-        </div>
-        <Separator />
-
-        {/* Certificates */}
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold">
-              All Certificates
-              {allCertificates.length > 0 && (
-                <span className="text-muted-foreground ml-2 text-sm font-normal">
-                  ({allCertificates.length}{' '}
-                  {allCertificates.length === 1
-                    ? 'certificate'
-                    : 'certificates'}
-                  )
-                </span>
-              )}
-            </h2>
+    <main>
+      <section style={{ position: 'relative', padding: '80px 0 40px' }}>
+        <Container>
+          <SectionRule
+            roman="C."
+            left="Certificates / Achievements"
+            middle="Professional milestones"
+            right={`${allCertificates.length} certs`}
+          />
+          <div data-reveal>
+            <span className="label">
+              Certificates <span className="ix">&middot; N&ordm; 01</span>
+            </span>
+            <h1
+              style={{
+                fontFamily: 'var(--sans)',
+                fontWeight: 800,
+                letterSpacing: '-0.028em',
+                color: 'var(--ink)',
+                lineHeight: 1.0,
+                fontSize: 'clamp(40px, 5vw, 66px)',
+                margin: '22px 0 20px',
+              }}
+            >
+              Certificates &{' '}
+              <em
+                style={{
+                  fontFamily: 'var(--serif)',
+                  fontStyle: 'italic',
+                  fontWeight: 500,
+                }}
+              >
+                achievements
+              </em>
+              <span style={{ color: 'var(--coral)' }}>.</span>
+            </h1>
           </div>
+        </Container>
+      </section>
 
+      <Container>
+        <div style={{ paddingBottom: 80 }}>
           <CertificatesGallery certificates={allCertificates} />
         </div>
-      </div>
-    </Container>
+      </Container>
+    </main>
   );
 }

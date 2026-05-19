@@ -1,6 +1,6 @@
 import Container from '@/components/common/Container';
+import { SectionRule } from '@/components/common/SectionRule';
 import ContactForm from '@/components/contact/ContactForm';
-import { Separator } from '@/components/ui/separator';
 import { contactConfig } from '@/config/Contact';
 import { generateMetadata as getMetadata } from '@/config/Meta';
 import { Metadata } from 'next';
@@ -23,24 +23,53 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <Container className="py-16">
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="space-y-4 text-center">
-          <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">
-            {contactConfig.title}
-          </h1>
-          <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
-            {contactConfig.description}
-          </p>
-        </div>
-        <Separator />
+    <main>
+      <section style={{ position: 'relative', padding: '80px 0 60px' }}>
+        <Container>
+          <SectionRule
+            roman="C."
+            left="Contact / Get in Touch"
+            middle="Start a conversation"
+            right="-- / --"
+          />
+          <div data-reveal>
+            <span className="label">
+              Contact <span className="ix">&middot; N&ordm; 01</span>
+            </span>
+            <h1
+              style={{
+                fontFamily: 'var(--sans)',
+                fontWeight: 800,
+                letterSpacing: '-0.028em',
+                color: 'var(--ink)',
+                lineHeight: 1.0,
+                fontSize: 'clamp(40px, 5vw, 66px)',
+                margin: '22px 0 20px',
+              }}
+            >
+              {contactConfig.title}
+              <span style={{ color: 'var(--coral)' }}>.</span>
+            </h1>
+            <p
+              style={{
+                fontFamily: 'var(--body)',
+                fontSize: 16,
+                lineHeight: 1.55,
+                color: 'var(--ink-soft)',
+                maxWidth: '48ch',
+              }}
+            >
+              {contactConfig.description}
+            </p>
+          </div>
+        </Container>
+      </section>
 
-        {/* Contact Form */}
-        <div className="mx-auto max-w-2xl">
+      <Container>
+        <div style={{ maxWidth: 640, margin: '0 auto', paddingBottom: 80 }}>
           <ContactForm />
         </div>
-      </div>
-    </Container>
+      </Container>
+    </main>
   );
 }

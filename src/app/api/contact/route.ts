@@ -6,6 +6,18 @@ const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT_WINDOW = 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 5;
 
+// Periodically clean up expired entries to prevent memory leaks
+if (typeof setInterval !== 'undefined') {
+  setInterval(() => {
+    const now = Date.now();
+    for (const [key, value] of rateLimitStore) {
+      if (now > value.resetTime) {
+        rateLimitStore.delete(key);
+      }
+    }
+  }, RATE_LIMIT_WINDOW * 2);
+}
+
 const contactSchema = z.object({
   name: z.string().min(2).max(100),
   email: z.string().email(),
@@ -62,6 +74,11 @@ function checkRateLimit(clientIP: string): {
   };
 }
 
+function escapeTelegramMarkdown(text: string): string {
+  // Escape MarkdownV1 special characters: _ * [ ] ( ) ~ ` > # + - = | { } . !
+  return text.replace(/([_*\[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
+}
+
 async function sendToTelegram(data: {
   name: string;
   email: string;
@@ -84,12 +101,12 @@ async function sendToTelegram(data: {
   const message = `
 🔔 *New Contact Form Submission*
 
-👤 *Name:* ${data.name.trim()}
-📧 *Email:* ${data.email.trim()}
-📱 *Phone:* ${data.phone.trim()}
+👤 *Name:* ${escapeTelegramMarkdown(data.name.trim())}
+📧 *Email:* ${escapeTelegramMarkdown(data.email.trim())}
+📱 *Phone:* ${escapeTelegramMarkdown(data.phone.trim())}
 
 💬 *Message:*
-${data.message.trim()}
+${escapeTelegramMarkdown(data.message.trim())}
 
 ⏰ *Submitted:* ${new Date().toISOString()}
 📍 *Timezone:* ${Intl.DateTimeFormat().resolvedOptions().timeZone}
@@ -176,7 +193,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: 'Invalid form data',
-          details: error.errors,
+          details: error.issues,
         },
         { status: 400 },
       );

@@ -1,139 +1,249 @@
-'use client';
-
-import { ctaConfig } from '@/config/CTA';
-import { useHapticFeedback } from '@/hooks/use-haptic-feedback';
-import Cal, { getCalApi } from '@calcom/embed-react';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import React from 'react';
 
 import Container from '../common/Container';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '../ui/dialog';
 
-interface CallToActionProps {
-  profileImage?: string;
-  profileAlt?: string;
-  linkText?: string;
-  calLink?: string;
-  preText?: string;
-}
-
-export default function CTA({
-  profileImage = ctaConfig.profileImage,
-  profileAlt = ctaConfig.profileAlt,
-  linkText = ctaConfig.linkText,
-  calLink = ctaConfig.calLink,
-  preText = ctaConfig.preText,
-}: CallToActionProps) {
-  const { triggerHaptic, isMobile } = useHapticFeedback();
-  const [showCalPopup, setShowCalPopup] = useState(false);
-
-  useEffect(() => {
-    const cal = async () => {
-      try {
-        const calApi = await getCalApi();
-        if (calApi) {
-          calApi('on', {
-            action: 'bookingSuccessful',
-            callback: () => {
-              setShowCalPopup(false);
-            },
-          });
-        }
-      } catch (error) {
-        console.error('Failed to initialize Cal API:', error);
-      }
-    };
-    cal();
-  }, []);
-
-  const handleButtonClick = () => {
-    if (isMobile()) {
-      triggerHaptic('medium');
-    }
-    setShowCalPopup(true);
-  };
-
+export default function CTA() {
   return (
-    <>
-      <Container className="mt-20 rounded-md border border-dashed border-black/20 py-8 dark:border-white/10">
-        <div className="mt-6 w-full flex-col px-6 pb-8 sm:flex sm:items-center sm:justify-between sm:px-12">
-          <p className="mb-4 text-center text-base opacity-50 sm:mb-3 md:text-xl">
-            {preText}
-          </p>
-          <div className="mt-4 flex w-full justify-center sm:mt-0 sm:w-auto sm:justify-end">
-            <div
-              className="group inline-flex cursor-pointer items-center self-end rounded-md border border-dashed border-black/20 bg-black/5 px-2 py-1 text-sm text-black shadow-[0_0_5px_rgba(0,0,0,0.1)] transition-all dark:border-white/30 dark:bg-white/15 dark:text-white dark:shadow-[0_0_5px_rgba(255,255,255,0.1)]"
-              onClick={handleButtonClick}
+    <section id="contact" style={{ position: 'relative', padding: '130px 0' }}>
+      <Container>
+        <div className="sec-rule">
+          <span className="roman">VIII.</span>
+          <span className="meta-grp">
+            <span>Contact / Start a conversation</span>
+            <span className="dot-mark">&bull;</span>
+            <span>Let&apos;s build something</span>
+          </span>
+          <span>008 / 008</span>
+        </div>
+
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1.05fr 1fr',
+            gap: 50,
+            alignItems: 'center',
+          }}
+        >
+          <div data-reveal>
+            <span className="label">
+              Start a conversation{' '}
+              <span className="ix">&middot; N&ordm; 07</span>
+            </span>
+            <h2
+              style={{
+                fontFamily: 'var(--sans)',
+                fontWeight: 800,
+                letterSpacing: '-0.028em',
+                color: 'var(--ink)',
+                lineHeight: 1.0,
+                fontSize: 'clamp(54px, 6.6vw, 100px)',
+                margin: '32px 0',
+              }}
             >
-              <div className="relative z-20 flex items-center gap-2 transition-all duration-300 group-hover:gap-8">
-                <div className="h-5 w-5 flex-shrink-0 overflow-hidden rounded-full">
-                  <Image
-                    alt={profileAlt}
-                    width={20}
-                    height={20}
-                    className="h-full w-full object-cover"
-                    src={profileImage}
-                    style={{ color: 'transparent' }}
-                  />
-                </div>
-                <div className="absolute left-[24px] flex -translate-x-full transform items-center gap-0 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-3 w-3"
-                  >
-                    <path d="M5 12h14"></path>
-                    <path d="M12 5v14"></path>
+              Have a project in{' '}
+              <em
+                style={{
+                  fontFamily: 'var(--serif)',
+                  fontStyle: 'italic',
+                  fontWeight: 500,
+                }}
+              >
+                mind
+              </em>
+              ? Let&apos;s build something{' '}
+              <em
+                style={{
+                  fontFamily: 'var(--serif)',
+                  fontStyle: 'italic',
+                  fontWeight: 500,
+                }}
+              >
+                great
+              </em>{' '}
+              together<span style={{ color: 'var(--coral)' }}>.</span>
+            </h2>
+            <p
+              style={{
+                fontFamily: 'var(--body)',
+                fontSize: 16,
+                lineHeight: 1.55,
+                color: 'var(--ink-soft)',
+                maxWidth: '36ch',
+                marginBottom: 36,
+              }}
+            >
+              Whether you need a full product built, a team member for a
+              specific project, or just want to chat about technology &mdash;
+              I&apos;d love to hear from you.
+            </p>
+
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 14,
+                marginBottom: 32,
+              }}
+            >
+              <a
+                className="btn btn-primary"
+                href="mailto:mikaelmacabali@gmail.com"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                Send a message
+                <span className="arrow">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M5 19L19 5M19 5H8M19 5v11" />
                   </svg>
-                  <div className="mr-2 ml-1 flex h-5 w-5 items-center justify-center rounded-full bg-black/10 text-[8px] dark:bg-white/10">
-                    You
-                  </div>
-                </div>
-                <span className="relative ml-0 block text-sm font-bold whitespace-nowrap transition-all duration-300 group-hover:ml-4">
-                  {linkText}
                 </span>
-              </div>
+              </a>
+              <a
+                href="mailto:mikaelmacabali@gmail.com"
+                target="_blank"
+                rel="noreferrer noopener"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  padding: '14px 18px 14px 22px',
+                  borderRadius: 999,
+                  border: '1px solid var(--line)',
+                  fontFamily: 'var(--sans)',
+                  fontSize: 14,
+                  color: 'var(--ink)',
+                  textDecoration: 'none',
+                }}
+              >
+                mikaelmacabali@gmail.com
+                <span
+                  style={{
+                    width: 22,
+                    height: 22,
+                    borderRadius: '50%',
+                    background: 'var(--ink)',
+                    color: 'var(--paper)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 12,
+                  }}
+                >
+                  &rarr;
+                </span>
+              </a>
+            </div>
+
+            <div
+              style={{
+                display: 'flex',
+                gap: 28,
+                alignItems: 'center',
+                marginTop: 32,
+                paddingTop: 22,
+                borderTop: '1px solid var(--line)',
+                fontFamily: 'var(--sans)',
+                fontSize: 11,
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                color: 'var(--ink-faint)',
+              }}
+            >
+              <span style={{ color: 'var(--coral)', fontWeight: 600 }}>
+                &bull; Live
+              </span>
+              <span>v1.0 / MIT</span>
+              <span style={{ marginLeft: 'auto' }}>
+                14.55&deg; N &middot; 121.02&deg; E
+              </span>
+            </div>
+          </div>
+
+          <div
+            data-reveal="right"
+            style={{
+              position: 'relative',
+              aspectRatio: '1 / 1',
+              maxWidth: 620,
+              marginLeft: 'auto',
+            }}
+          >
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                background: 'var(--bone)',
+                borderRadius: 12,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <svg
+                viewBox="0 0 200 200"
+                fill="none"
+                style={{ width: '60%', height: '60%' }}
+              >
+                <rect
+                  x="40"
+                  y="60"
+                  width="120"
+                  height="80"
+                  rx="8"
+                  stroke="var(--ink)"
+                  strokeWidth="1.5"
+                />
+                <path
+                  d="M40 68l60 40 60-40"
+                  stroke="var(--ink)"
+                  strokeWidth="1.5"
+                />
+                <circle
+                  cx="100"
+                  cy="100"
+                  r="15"
+                  stroke="var(--coral)"
+                  strokeWidth="1.5"
+                />
+                <path
+                  d="M95 100l3 3 7-7"
+                  stroke="var(--coral)"
+                  strokeWidth="1.5"
+                />
+              </svg>
+            </div>
+            <div
+              style={{
+                position: 'absolute',
+                right: 8,
+                top: 24,
+                fontFamily: 'var(--serif)',
+                fontStyle: 'italic',
+                fontSize: 28,
+                color: 'var(--ink-faint)',
+              }}
+            >
+              N&ordm; 08
+            </div>
+            <div
+              style={{
+                position: 'absolute',
+                left: -32,
+                top: '50%',
+                fontFamily: 'var(--sans)',
+                fontSize: '10.5px',
+                letterSpacing: '0.42em',
+                textTransform: 'uppercase',
+                color: 'var(--ink-faint)',
+                writingMode: 'vertical-rl',
+                transform: 'rotate(180deg)',
+              }}
+            >
+              MIKAEL MACABALI &nbsp;&middot;&nbsp; FIN.
             </div>
           </div>
         </div>
       </Container>
-
-      {/* Cal.com Dialog */}
-      <Dialog open={showCalPopup} onOpenChange={setShowCalPopup}>
-        <DialogContent className="max-h-[90vh] max-w-[calc(100vw-2rem)] overflow-hidden sm:max-w-[calc(100vw-4rem)] md:max-w-4xl">
-          <DialogHeader>
-            <DialogTitle>Book a Meeting</DialogTitle>
-            <DialogDescription>
-              Schedule a time to connect and discuss opportunities
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="max-h-[calc(90vh-220px)] overflow-y-auto rounded-lg">
-            <Cal
-              calLink={calLink}
-              config={{
-                name: 'Portfolio Visitor',
-                email: '',
-                notes: 'Booked from portfolio website',
-              }}
-              className="h-[500px] w-full rounded-lg"
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
+    </section>
   );
 }

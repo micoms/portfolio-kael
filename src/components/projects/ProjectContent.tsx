@@ -161,7 +161,7 @@ export function ProjectContent({ frontmatter, content }: ProjectContentProps) {
       </div>
 
       {/* Challenges and Learnings */}
-      {(challenges?.length || learnings?.length) && (
+      {((challenges?.length ?? 0) > 0 || (learnings?.length ?? 0) > 0) && (
         <div className="mb-8 grid gap-6 md:grid-cols-2">
           {challenges && challenges.length > 0 && (
             <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-950/20">

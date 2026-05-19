@@ -1,9 +1,6 @@
 import Container from '@/components/common/Container';
 import { ProjectContent } from '@/components/projects/ProjectContent';
 import { ProjectNavigation } from '@/components/projects/ProjectNavigation';
-import ArrowLeft from '@/components/svgs/ArrowLeft';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { siteConfig } from '@/config/Meta';
 import {
   getProjectCaseStudyBySlug,
@@ -15,51 +12,39 @@ import { Metadata } from 'next';
 import { Link } from 'next-view-transitions';
 import { notFound } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 interface ProjectCaseStudyPageProps {
   params: Promise<{
     slug: string;
   }>;
 }
 
-// Generate static paths for all project case studies
-export async function generateStaticParams() {
-  const slugs = getProjectCaseStudySlugs();
-
-  return slugs.map((slug) => ({
-    slug,
-  }));
-}
-
-// Generate metadata for each project case study
 export async function generateMetadata({
   params,
 }: ProjectCaseStudyPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const caseStudy = await getProjectCaseStudyBySlug(slug);
+  const project = await getProjectCaseStudyBySlug(slug);
 
-  if (!caseStudy || !caseStudy.frontmatter.isPublished) {
-    return {
-      title: 'Project Not Found',
-    };
+  if (!project || !project.isPublished) {
+    return { title: 'Project Not Found' };
   }
-
-  const { title, description, image } = caseStudy.frontmatter;
 
   return {
     metadataBase: new URL(siteConfig.url),
-    title: `${title} - Project Case Study`,
-    description,
+    title: `${project.title} - Project Case Study`,
+    description: project.description,
     openGraph: {
-      title: `${title} - Project Case Study`,
-      description,
-      images: [image],
+      title: `${project.title} - Project Case Study`,
+      description: project.description,
+      images: [project.image],
       type: 'article',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${title} - Project Case Study`,
-      description,
-      images: [image],
+      title: `${project.title} - Project Case Study`,
+      description: project.description,
+      images: [project.image],
     },
   };
 }
@@ -68,110 +53,213 @@ export default async function ProjectCaseStudyPage({
   params,
 }: ProjectCaseStudyPageProps) {
   const { slug } = await params;
-  const caseStudy = await getProjectCaseStudyBySlug(slug);
+  const project = await getProjectCaseStudyBySlug(slug);
 
-  if (!caseStudy || !caseStudy.frontmatter.isPublished) {
+  if (!project || !project.isPublished) {
     notFound();
   }
 
   const navigation = await getProjectNavigation(slug);
   const relatedProjects = await getRelatedProjectCaseStudies(slug, 2);
 
+  const caseStudy = project.caseStudy;
+
   return (
-    <Container className="py-16">
-      <div className="space-y-12">
+    <Container>
+      <div style={{ paddingTop: 40, paddingBottom: 80 }}>
         {/* Back Button */}
-        <div>
-          <Button variant="ghost" asChild className="group">
-            <Link href="/projects" className="flex items-center space-x-2">
-              <ArrowLeft className="size-4" />
-              <span>Back to Projects</span>
-            </Link>
-          </Button>
+        <div style={{ marginBottom: 40 }}>
+          <Link
+            href="/projects"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              fontFamily: 'var(--sans)',
+              fontSize: 13,
+              color: 'var(--ink-mute)',
+              textDecoration: 'none',
+              transition: 'color 160ms ease',
+            }}
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+            >
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Projects
+          </Link>
         </div>
 
         {/* Project Content */}
         <ProjectContent
-          frontmatter={caseStudy.frontmatter}
-          content={caseStudy.content}
+          frontmatter={{
+            title: project.title,
+            description: project.description,
+            image: project.image,
+            technologies: project.technologies.map(
+              (t: { name: string }) => t.name,
+            ),
+            github: project.github || '',
+            live: project.live || '',
+            timeline: caseStudy?.timeline || '',
+            role: caseStudy?.role || '',
+            team: caseStudy?.team || '',
+            status: project.status as 'completed' | 'in-progress' | 'archived',
+            featured: project.featured,
+            challenges: caseStudy?.challenges || [],
+            learnings: caseStudy?.learnings || [],
+            isPublished: project.isPublished,
+          }}
+          content={caseStudy?.content || ''}
         />
 
         {/* Project Navigation */}
-        <ProjectNavigation
-          previous={navigation.previous}
-          next={navigation.next}
-        />
+        <ProjectNavigation previous={navigation.prev} next={navigation.next} />
 
         {/* Related Projects */}
         {relatedProjects.length > 0 && (
-          <div className="space-y-6">
-            <Separator />
-            <div className="space-y-6">
-              <h2 className="text-2xl font-semibold">Related Projects</h2>
-              <div className="grid gap-6 md:grid-cols-2">
-                {relatedProjects.map((project) => (
-                  <div
-                    key={project.slug}
-                    className="group bg-card hover:bg-muted/50 rounded-lg border p-6 transition-colors"
-                  >
-                    <Link href={`/projects/${project.slug}`}>
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <h3 className="group-hover:text-primary text-lg font-semibold">
-                            {project.frontmatter.title}
-                          </h3>
-                          <div className="text-xs">
-                            <div
-                              className={`inline-block rounded px-2 py-1 text-xs font-medium ${
-                                project.frontmatter.status === 'completed'
-                                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                                  : project.frontmatter.status === 'in-progress'
-                                    ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                                    : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
-                              }`}
+          <div style={{ marginTop: 60 }}>
+            <div style={{ borderTop: '1px solid var(--line)', paddingTop: 40 }}>
+              <h2
+                style={{
+                  fontFamily: 'var(--sans)',
+                  fontSize: 22,
+                  fontWeight: 700,
+                  color: 'var(--ink)',
+                  marginBottom: 24,
+                }}
+              >
+                Related Projects
+              </h2>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  gap: 22,
+                }}
+              >
+                {relatedProjects.map(
+                  (project: {
+                    slug: string;
+                    title: string;
+                    description: string;
+                    status: string;
+                    technologies: { name: string }[];
+                  }) => (
+                    <Link
+                      key={project.slug}
+                      href={`/projects/${project.slug}`}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        padding: '24px',
+                        background: 'var(--bone)',
+                        borderRadius: 18,
+                        boxShadow:
+                          'var(--shadow), inset 0 0 0 1px rgba(21, 20, 15, 0.06)',
+                        textDecoration: 'none',
+                        color: 'inherit',
+                        transition: 'transform 0.2s ease',
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 10,
+                          marginBottom: 12,
+                        }}
+                      >
+                        <h3
+                          style={{
+                            fontFamily: 'var(--sans)',
+                            fontSize: 18,
+                            fontWeight: 700,
+                            color: 'var(--ink)',
+                          }}
+                        >
+                          {project.title}
+                        </h3>
+                        <span
+                          style={{
+                            padding: '3px 8px',
+                            borderRadius: 999,
+                            background:
+                              project.status === 'completed'
+                                ? 'var(--olive)'
+                                : 'var(--coral)',
+                            color: '#fff',
+                            fontFamily: 'var(--sans)',
+                            fontSize: 10,
+                            fontWeight: 600,
+                            letterSpacing: '0.04em',
+                            textTransform: 'uppercase',
+                          }}
+                        >
+                          {project.status.charAt(0).toUpperCase() +
+                            project.status.slice(1)}
+                        </span>
+                      </div>
+                      <p
+                        style={{
+                          fontFamily: 'var(--body)',
+                          fontSize: 13,
+                          color: 'var(--ink-mute)',
+                          lineHeight: 1.55,
+                          marginBottom: 16,
+                          flex: 1,
+                        }}
+                      >
+                        {project.description}
+                      </p>
+                      <div
+                        style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}
+                      >
+                        {project.technologies
+                          .slice(0, 3)
+                          .map((tech: { name: string }) => (
+                            <span
+                              key={tech.name}
+                              style={{
+                                padding: '3px 8px',
+                                borderRadius: 999,
+                                border: '1px solid var(--line)',
+                                fontFamily: 'var(--sans)',
+                                fontSize: 10,
+                                color: 'var(--ink-faint)',
+                              }}
                             >
-                              {project.frontmatter.status
-                                .charAt(0)
-                                .toUpperCase() +
-                                project.frontmatter.status.slice(1)}
-                            </div>
-                          </div>
-                        </div>
-                        <p className="text-muted-foreground line-clamp-2 text-sm">
-                          {project.frontmatter.description}
-                        </p>
-                        <div className="flex flex-wrap gap-1">
-                          {project.frontmatter.technologies
-                            .slice(0, 3)
-                            .map((tech) => (
-                              <span
-                                key={tech}
-                                className="bg-muted rounded px-2 py-1 text-xs"
-                              >
-                                {tech}
-                              </span>
-                            ))}
-                          {project.frontmatter.technologies.length > 3 && (
-                            <span className="bg-muted rounded px-2 py-1 text-xs">
-                              +{project.frontmatter.technologies.length - 3}
+                              {tech.name}
                             </span>
-                          )}
-                        </div>
+                          ))}
                       </div>
                     </Link>
-                  </div>
-                ))}
+                  ),
+                )}
               </div>
             </div>
           </div>
         )}
 
         {/* Back to Projects CTA */}
-        <div className="text-center">
-          <Separator className="mb-8" />
-          <Button asChild size="lg">
-            <Link href="/projects">View All Projects</Link>
-          </Button>
+        <div style={{ textAlign: 'center', marginTop: 60 }}>
+          <div
+            style={{ borderTop: '1px solid var(--line)', marginBottom: 32 }}
+          />
+          <Link href="/projects" className="btn btn-ghost">
+            View All Projects
+            <span className="arrow">
+              <svg viewBox="0 0 24 24">
+                <path d="M5 19L19 5M19 5H8M19 5v11" />
+              </svg>
+            </span>
+          </Link>
         </div>
       </div>
     </Container>

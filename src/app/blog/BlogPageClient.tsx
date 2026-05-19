@@ -2,12 +2,9 @@
 
 import { BlogList } from '@/components/blog/BlogList';
 import Container from '@/components/common/Container';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { useHapticFeedback } from '@/hooks/use-haptic-feedback';
 import { BlogPostPreview } from '@/types/blog';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
 interface BlogPageClientProps {
   initialPosts: BlogPostPreview[];
@@ -33,36 +30,19 @@ export function BlogPageClient({
   const router = useRouter();
   const { triggerHaptic, isMobile } = useHapticFeedback();
 
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const [filteredPosts, setFilteredPosts] = useState(initialPosts);
+  const selectedTag = searchParams.get('tag');
+  const filteredPosts = selectedTag
+    ? getBlogPostsByTagClient(initialPosts, selectedTag)
+    : initialPosts;
 
-  // Get tag from URL params on mount
-  useEffect(() => {
-    const tagParam = searchParams.get('tag');
-    if (tagParam) {
-      setSelectedTag(tagParam);
-      const filtered = getBlogPostsByTagClient(initialPosts, tagParam);
-      setFilteredPosts(filtered);
-    } else {
-      setSelectedTag(null);
-      setFilteredPosts(initialPosts);
-    }
-  }, [searchParams, initialPosts]);
-
-  // Handle tag click
   const handleTagClick = (tag: string) => {
     if (isMobile()) {
       triggerHaptic('light');
     }
 
     if (selectedTag === tag) {
-      setSelectedTag(null);
-      setFilteredPosts(initialPosts);
       router.replace('/blog');
     } else {
-      setSelectedTag(tag);
-      const filtered = getBlogPostsByTagClient(initialPosts, tag);
-      setFilteredPosts(filtered);
       router.replace(`/blog?tag=${encodeURIComponent(tag)}`);
     }
   };
@@ -76,35 +56,48 @@ export function BlogPageClient({
   };
 
   return (
-    <Container className="py-16">
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="space-y-4 text-center">
-          <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">
-            Blogs
-          </h1>
-          <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
-            Thoughts, tutorials, and insights on engineering, and programming.
-          </p>
-        </div>
-
-        <Separator />
-
+    <Container>
+      <div style={{ paddingBottom: 80 }}>
         {/* Tags */}
         {initialTags.length > 0 && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Popular Tags</h2>
+          <div style={{ marginBottom: 40 }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: 16,
+              }}
+            >
+              <h2
+                style={{
+                  fontFamily: 'var(--sans)',
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: 'var(--ink)',
+                  letterSpacing: '0.04em',
+                }}
+              >
+                Popular Tags
+              </h2>
               {selectedTag && (
                 <button
                   onClick={() => handleTagClick(selectedTag)}
-                  className="text-muted-foreground hover:text-foreground text-sm underline"
+                  style={{
+                    fontFamily: 'var(--sans)',
+                    fontSize: 12,
+                    color: 'var(--coral)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                  }}
                 >
                   Clear filter
                 </button>
               )}
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {initialTags.map((tag) => {
                 const postCount = getTagPostCount(tag);
                 const isSelected = selectedTag === tag;
@@ -112,14 +105,22 @@ export function BlogPageClient({
                   <button
                     key={tag}
                     onClick={() => handleTagClick(tag)}
-                    className="transition-colors"
+                    style={{
+                      padding: '7px 14px',
+                      borderRadius: 999,
+                      border: isSelected
+                        ? '1px solid var(--coral)'
+                        : '1px solid var(--line)',
+                      fontFamily: 'var(--sans)',
+                      fontSize: 12,
+                      color: isSelected ? '#fff' : 'var(--ink-soft)',
+                      background: isSelected ? 'var(--coral)' : 'transparent',
+                      cursor: 'pointer',
+                      transition: 'all 0.18s ease',
+                      textTransform: 'capitalize',
+                    }}
                   >
-                    <Badge
-                      variant={isSelected ? 'default' : 'outline'}
-                      className="hover:bg-accent hover:text-accent-foreground tag-inner-shadow cursor-pointer capitalize"
-                    >
-                      {tag} ({postCount})
-                    </Badge>
+                    {tag} ({postCount})
                   </button>
                 );
               })}
@@ -128,19 +129,32 @@ export function BlogPageClient({
         )}
 
         {/* Blog Posts */}
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold">
-              {selectedTag ? `Posts tagged "${selectedTag}"` : 'Latest Posts'}
-              {filteredPosts.length > 0 && (
-                <span className="text-muted-foreground ml-2 text-sm font-normal">
-                  ({filteredPosts.length}{' '}
-                  {filteredPosts.length === 1 ? 'post' : 'posts'})
-                </span>
-              )}
-            </h2>
-          </div>
-
+        <div>
+          <h2
+            style={{
+              fontFamily: 'var(--sans)',
+              fontSize: 22,
+              fontWeight: 700,
+              color: 'var(--ink)',
+              marginBottom: 24,
+            }}
+          >
+            {selectedTag ? `Posts tagged "${selectedTag}"` : 'Latest Posts'}
+            {filteredPosts.length > 0 && (
+              <span
+                style={{
+                  fontFamily: 'var(--sans)',
+                  fontSize: 13,
+                  color: 'var(--ink-faint)',
+                  fontWeight: 400,
+                  marginLeft: 8,
+                }}
+              >
+                ({filteredPosts.length}{' '}
+                {filteredPosts.length === 1 ? 'post' : 'posts'})
+              </span>
+            )}
+          </h2>
           <BlogList posts={filteredPosts} />
         </div>
       </div>

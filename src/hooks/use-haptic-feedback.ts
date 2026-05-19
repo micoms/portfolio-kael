@@ -4,6 +4,8 @@ import { useCallback } from 'react';
 
 type HapticFeedbackType = 'light' | 'medium' | 'heavy' | 'selection' | 'impact';
 
+let iosAudioContext: AudioContext | null = null;
+
 export const useHapticFeedback = () => {
   const triggerHaptic = useCallback((type: HapticFeedbackType = 'light') => {
     // Check if we're in a browser environment and if haptic feedback is supported
@@ -45,30 +47,33 @@ export const useHapticFeedback = () => {
         ).requestPermission === 'function'
       ) {
         // iOS haptic feedback through AudioContext (workaround)
-        const AudioContextClass =
-          window.AudioContext ||
-          (window as unknown as { webkitAudioContext: typeof AudioContext })
-            .webkitAudioContext;
-        const audioContext = new AudioContextClass();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
+        // Reuse a single AudioContext to avoid hitting the browser limit
+        if (!iosAudioContext) {
+          const AudioContextClass =
+            window.AudioContext ||
+            (window as unknown as { webkitAudioContext: typeof AudioContext })
+              .webkitAudioContext;
+          iosAudioContext = new AudioContextClass();
+        }
+        const oscillator = iosAudioContext.createOscillator();
+        const gainNode = iosAudioContext.createGain();
 
         oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
+        gainNode.connect(iosAudioContext.destination);
 
-        oscillator.frequency.setValueAtTime(0, audioContext.currentTime);
-        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(0, iosAudioContext.currentTime);
+        gainNode.gain.setValueAtTime(0, iosAudioContext.currentTime);
         gainNode.gain.linearRampToValueAtTime(
           0.01,
-          audioContext.currentTime + 0.01,
+          iosAudioContext.currentTime + 0.01,
         );
         gainNode.gain.linearRampToValueAtTime(
           0,
-          audioContext.currentTime + 0.02,
+          iosAudioContext.currentTime + 0.02,
         );
 
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.02);
+        oscillator.start(iosAudioContext.currentTime);
+        oscillator.stop(iosAudioContext.currentTime + 0.02);
       }
     } catch (error) {
       // Silently fail if haptic feedback is not supported

@@ -2,9 +2,6 @@ import { BlogContent } from '@/components/blog/BlogContent';
 import { BlogList } from '@/components/blog/BlogList';
 import Container from '@/components/common/Container';
 import FontSizeControls from '@/components/common/FontSizeControls';
-import ArrowLeft from '@/components/svgs/ArrowLeft';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { siteConfig } from '@/config/Meta';
 import {
   getBlogPostBySlug,
@@ -15,52 +12,39 @@ import { Metadata } from 'next';
 import { Link } from 'next-view-transitions';
 import { notFound } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 interface BlogPostPageProps {
   params: Promise<{
     slug: string;
   }>;
 }
 
-// Generate static paths for all blog posts
-export async function generateStaticParams() {
-  const slugs = getBlogPostSlugs();
-
-  return slugs.map((slug) => ({
-    slug,
-  }));
-}
-
-// Generate metadata for each blog post
 export async function generateMetadata({
   params,
 }: BlogPostPageProps): Promise<Metadata> {
-  //  await params
   const { slug } = await params;
   const post = await getBlogPostBySlug(slug);
 
-  if (!post || !post.frontmatter.isPublished) {
-    return {
-      title: 'Post Not Found',
-    };
+  if (!post || !post.isPublished) {
+    return { title: 'Post Not Found' };
   }
-
-  const { title, description, image } = post.frontmatter;
 
   return {
     metadataBase: new URL(siteConfig.url),
-    title,
-    description,
+    title: post.title,
+    description: post.description,
     openGraph: {
-      title,
-      description,
-      images: [image],
+      title: post.title,
+      description: post.description,
+      images: [post.image],
       type: 'article',
     },
     twitter: {
       card: 'summary_large_image',
-      title,
-      description,
-      images: [image],
+      title: post.title,
+      description: post.description,
+      images: [post.image],
     },
   };
 }
@@ -69,45 +53,114 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
   const post = await getBlogPostBySlug(slug);
 
-  if (!post || !post.frontmatter.isPublished) {
+  if (!post || !post.isPublished) {
     notFound();
   }
   const relatedPosts = await getRelatedPosts(slug, 3);
 
   return (
     <>
-      <Container className="py-16">
-        <div className="space-y-12">
+      <Container>
+        <div style={{ paddingTop: 40, paddingBottom: 80 }}>
           {/* Back Button */}
-          <div>
-            <Button variant="ghost" asChild className="group">
-              <Link href="/blog" className="flex items-center space-x-2">
-                <ArrowLeft className="size-4" />
-                <span>Back to Blog</span>
-              </Link>
-            </Button>
+          <div style={{ marginBottom: 40 }}>
+            <Link
+              href="/blog"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                fontFamily: 'var(--sans)',
+                fontSize: 13,
+                color: 'var(--ink-mute)',
+                textDecoration: 'none',
+                transition: 'color 160ms ease',
+              }}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+              >
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+              </svg>
+              Back to Blog
+            </Link>
           </div>
 
           {/* Blog Content */}
-          <BlogContent frontmatter={post.frontmatter} content={post.content} />
+          <BlogContent
+            frontmatter={{
+              title: post.title,
+              description: post.description,
+              image: post.image,
+              tags: post.tags,
+              date: post.date.toISOString(),
+              isPublished: post.isPublished,
+            }}
+            content={post.content}
+          />
 
           {/* Related Posts */}
           {relatedPosts.length > 0 && (
-            <div className="space-y-6">
-              <Separator />
-              <div className="space-y-6">
-                <h2 className="text-2xl font-semibold">Related Posts</h2>
-                <BlogList posts={relatedPosts} />
+            <div style={{ marginTop: 80 }}>
+              <div
+                style={{ borderTop: '1px solid var(--line)', paddingTop: 40 }}
+              >
+                <h2
+                  style={{
+                    fontFamily: 'var(--sans)',
+                    fontSize: 22,
+                    fontWeight: 700,
+                    color: 'var(--ink)',
+                    marginBottom: 24,
+                  }}
+                >
+                  Related Posts
+                </h2>
+                <BlogList
+                  posts={relatedPosts.map(
+                    (p: {
+                      slug: string;
+                      title: string;
+                      description: string;
+                      image: string;
+                      tags: string[];
+                      date: Date;
+                      isPublished: boolean;
+                    }) => ({
+                      slug: p.slug,
+                      frontmatter: {
+                        title: p.title,
+                        description: p.description,
+                        image: p.image,
+                        tags: p.tags,
+                        date: p.date.toISOString(),
+                        isPublished: p.isPublished,
+                      },
+                    }),
+                  )}
+                />
               </div>
             </div>
           )}
 
           {/* Back to Blog CTA */}
-          <div className="text-center">
-            <Separator className="mb-8" />
-            <Button asChild size="lg">
-              <Link href="/blog">View All Blogs</Link>
-            </Button>
+          <div style={{ textAlign: 'center', marginTop: 60 }}>
+            <div
+              style={{ borderTop: '1px solid var(--line)', marginBottom: 32 }}
+            />
+            <Link href="/blog" className="btn btn-ghost">
+              View All Blogs
+              <span className="arrow">
+                <svg viewBox="0 0 24 24">
+                  <path d="M5 19L19 5M19 5H8M19 5v11" />
+                </svg>
+              </span>
+            </Link>
           </div>
         </div>
       </Container>

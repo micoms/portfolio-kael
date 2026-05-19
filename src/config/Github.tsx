@@ -6,7 +6,7 @@
  */
 
 export const githubConfig = {
-  username: 'ramxcodes',
+  username: 'micoms',
   apiUrl: 'https://github-contributions-api.deno.dev',
 
   // Display settings
@@ -41,21 +41,21 @@ export const githubConfig = {
   // Total count label template
   totalCountLabel: '{{count}} contributions in the last year',
 
-  // Theme configuration for dark and light modes
+  // Theme configuration for dark and light modes (indigo/violet accent)
   theme: {
     dark: [
-      'rgb(22, 27, 34)', // Very dark for no contributions
-      'rgb(14, 68, 41)', // Dark green
-      'rgb(0, 109, 50)', // Medium green
-      'rgb(38, 166, 65)', // Bright green
-      'rgb(57, 211, 83)', // Very bright green
+      'rgb(22, 22, 35)', // Very dark for no contributions
+      'rgb(55, 30, 80)', // Dark violet
+      'rgb(80, 40, 130)', // Medium violet
+      'rgb(110, 60, 180)', // Bright violet
+      'rgb(140, 90, 220)', // Very bright violet
     ],
     light: [
       'rgb(235, 237, 240)', // Light gray
-      'rgb(155, 233, 168)', // Light green
-      'rgb(64, 196, 99)', // Medium green
-      'rgb(48, 161, 78)', // Dark green
-      'rgb(33, 110, 57)', // Very dark green
+      'rgb(210, 195, 245)', // Light lavender
+      'rgb(160, 120, 230)', // Medium violet
+      'rgb(120, 80, 200)', // Dark violet
+      'rgb(85, 50, 160)', // Very dark violet
     ],
   },
 

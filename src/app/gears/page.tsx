@@ -1,6 +1,6 @@
 import Container from '@/components/common/Container';
+import { SectionRule } from '@/components/common/SectionRule';
 import Monitor from '@/components/svgs/devices/Monitor';
-import { Separator } from '@/components/ui/separator';
 import { devices, software, webExtensions } from '@/config/Gears';
 import { generateMetadata as getMetadata } from '@/config/Meta';
 import { ArrowUpRight, Puzzle } from 'lucide-react';
@@ -25,92 +25,255 @@ export const metadata: Metadata = {
 
 export default function GearsPage() {
   return (
-    <Container className="py-16">
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="space-y-4 text-center">
-          <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">
-            Gears
-          </h1>
-          <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
-            My gears and tools i use to get my work done.
-          </p>
-        </div>
-        <Separator />
-
-        {/* Devices Section */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold">Devices</h2>
-          <div className="flex flex-col flex-wrap gap-4">
-            {devices.map((device) => (
-              <div key={device.name} className="flex items-center gap-4">
-                <div className="bg-muted flex items-center justify-center rounded-md border border-black/10 p-2 text-[#736F70] dark:border-white/10">
-                  {device.icon}
-                </div>
-                <div className="flex flex-col">
-                  <h3 className="text-secondary text-sm">{device.name}</h3>
-                </div>
-              </div>
-            ))}
+    <main>
+      <section style={{ position: 'relative', padding: '80px 0 40px' }}>
+        <Container>
+          <SectionRule
+            roman="G."
+            left="Gears / Setup"
+            middle="Tools of the trade"
+            right="-- / --"
+          />
+          <div data-reveal>
+            <span className="label">
+              Gears <span className="ix">&middot; N&ordm; 01</span>
+            </span>
+            <h1
+              style={{
+                fontFamily: 'var(--sans)',
+                fontWeight: 800,
+                letterSpacing: '-0.028em',
+                color: 'var(--ink)',
+                lineHeight: 1.0,
+                fontSize: 'clamp(40px, 5vw, 66px)',
+                margin: '22px 0 20px',
+              }}
+            >
+              My{' '}
+              <em
+                style={{
+                  fontFamily: 'var(--serif)',
+                  fontStyle: 'italic',
+                  fontWeight: 500,
+                }}
+              >
+                gears
+              </em>{' '}
+              and tools<span style={{ color: 'var(--coral)' }}>.</span>
+            </h1>
           </div>
-        </div>
+        </Container>
+      </section>
 
-        {/* Web Extensions Section */}
-        <div className="space-y-4 pt-10">
-          <div className="flex items-center gap-4">
-            <div className="bg-muted flex items-center justify-center rounded-md border border-black/10 p-2 text-[#736F70] dark:border-white/10">
-              <Puzzle className="size-4" />
-            </div>
-            <h2 className="text-2xl font-semibold">Web Extensions</h2>
-          </div>
-          <div className="mt-8 flex flex-col flex-wrap gap-4">
-            {webExtensions.map((extension, index) => (
-              <div key={extension.name} className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="bg-muted flex items-center justify-center rounded-md border border-black/10 px-2 py-1 text-[#736F70] dark:border-white/10">
-                    <span className="text-secondary text-sm">{index + 1}</span>
+      <Container>
+        <div style={{ paddingBottom: 80 }}>
+          {/* Devices */}
+          <div style={{ marginBottom: 48 }}>
+            <h2
+              style={{
+                fontFamily: 'var(--sans)',
+                fontSize: 22,
+                fontWeight: 700,
+                color: 'var(--ink)',
+                marginBottom: 20,
+              }}
+            >
+              Devices
+            </h2>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: 12,
+              }}
+            >
+              {devices.map((device) => (
+                <div
+                  key={device.name}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 16,
+                    padding: '16px 20px',
+                    background: 'var(--bone)',
+                    borderRadius: 18,
+                    boxShadow:
+                      'var(--shadow), inset 0 0 0 1px rgba(21, 20, 15, 0.06)',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 12,
+                      background: 'var(--paper-dark)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      color: 'var(--ink)',
+                    }}
+                  >
+                    {device.icon}
                   </div>
-                  <h3 className="text-secondary ml-4 flex items-center gap-1 text-sm">
-                    <Link target="_blank" href={extension.href}>
-                      {extension.name}
-                    </Link>
-                    <ArrowUpRight className="size-4" />
+                  <h3
+                    style={{
+                      fontFamily: 'var(--sans)',
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: 'var(--ink)',
+                    }}
+                  >
+                    {device.name}
                   </h3>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Software Section */}
-        <div className="space-y-4 pt-10">
-          <div className="flex items-center gap-4">
-            <div className="bg-muted flex items-center justify-center rounded-md border border-black/10 p-2 text-[#736F70] dark:border-white/10">
-              <Monitor className="size-4" />
+              ))}
             </div>
-            <h2 className="text-2xl font-semibold">Software</h2>
           </div>
-          <div className="mt-8 flex flex-col flex-wrap gap-4">
-            {software.map((app, index) => (
-              <div key={app.name} className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="bg-muted flex items-center justify-center rounded-md border border-black/10 px-2 py-1 text-[#736F70] dark:border-white/10">
-                    <span className="text-secondary text-sm">
-                      {(index + 1).toString()}
-                    </span>
-                  </div>
-                  <h3 className="text-secondary ml-4 flex items-center gap-1 text-sm">
-                    <Link target="_blank" href={app.href}>
-                      {app.name}
-                    </Link>
-                    <ArrowUpRight className="size-4" />
-                  </h3>
-                </div>
+
+          {/* Web Extensions */}
+          <div style={{ marginBottom: 48 }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                marginBottom: 20,
+              }}
+            >
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 10,
+                  background: 'var(--bone)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'var(--ink)',
+                }}
+              >
+                <Puzzle size={16} />
               </div>
-            ))}
+              <h2
+                style={{
+                  fontFamily: 'var(--sans)',
+                  fontSize: 22,
+                  fontWeight: 700,
+                  color: 'var(--ink)',
+                }}
+              >
+                Web Extensions
+              </h2>
+            </div>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: 8,
+              }}
+            >
+              {webExtensions.map((ext) => (
+                <Link
+                  key={ext.name}
+                  href={ext.href}
+                  target="_blank"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '12px 16px',
+                    background: 'var(--bone)',
+                    borderRadius: 12,
+                    textDecoration: 'none',
+                    color: 'var(--ink-soft)',
+                    fontFamily: 'var(--sans)',
+                    fontSize: 13,
+                    transition: 'color 160ms ease',
+                  }}
+                >
+                  <span>{ext.name}</span>
+                  <ArrowUpRight
+                    size={14}
+                    style={{ color: 'var(--ink-faint)' }}
+                  />
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Software */}
+          <div>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                marginBottom: 20,
+              }}
+            >
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 10,
+                  background: 'var(--bone)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'var(--ink)',
+                }}
+              >
+                <Monitor className="size-4" />
+              </div>
+              <h2
+                style={{
+                  fontFamily: 'var(--sans)',
+                  fontSize: 22,
+                  fontWeight: 700,
+                  color: 'var(--ink)',
+                }}
+              >
+                Software
+              </h2>
+            </div>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: 8,
+              }}
+            >
+              {software.map((app) => (
+                <Link
+                  key={app.name}
+                  href={app.href}
+                  target="_blank"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '12px 16px',
+                    background: 'var(--bone)',
+                    borderRadius: 12,
+                    textDecoration: 'none',
+                    color: 'var(--ink-soft)',
+                    fontFamily: 'var(--sans)',
+                    fontSize: 13,
+                    transition: 'color 160ms ease',
+                  }}
+                >
+                  <span>{app.name}</span>
+                  <ArrowUpRight
+                    size={14}
+                    style={{ color: 'var(--ink-faint)' }}
+                  />
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </main>
   );
 }

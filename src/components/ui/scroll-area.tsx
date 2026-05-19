@@ -11,24 +11,25 @@ function ScrollArea({
   ...props
 }: React.ComponentProps<typeof ScrollAreaPrimitive.Root>) {
   const viewportRef = React.useRef<HTMLDivElement | null>(null);
-  const [lenisInstance, setLenisInstance] = React.useState<Lenis | null>(null);
+  const lenisRef = React.useRef<Lenis | null>(null);
 
   React.useEffect(() => {
     type WindowWithLenis = Window & { lenis?: Lenis };
-    if (typeof window !== 'undefined' && (window as WindowWithLenis).lenis) {
-      setLenisInstance((window as WindowWithLenis).lenis!);
+    const win = window as unknown as WindowWithLenis;
+    if (typeof window !== 'undefined' && win.lenis) {
+      lenisRef.current = win.lenis;
     }
   }, []);
 
   const onMouseEnter = () => {
-    if (lenisInstance) {
-      lenisInstance.stop(); // Stop Lenis scrolling when mouse inside chat
+    if (lenisRef.current) {
+      lenisRef.current.stop(); // Stop Lenis scrolling when mouse inside chat
     }
   };
 
   const onMouseLeave = () => {
-    if (lenisInstance) {
-      lenisInstance.start(); // Resume Lenis scrolling when mouse leaves chat
+    if (lenisRef.current) {
+      lenisRef.current.start(); // Resume Lenis scrolling when mouse leaves chat
     }
   };
 

@@ -9,18 +9,18 @@ import ReactIcon from '@/components/technologies/ReactIcon';
 import TypeScript from '@/components/technologies/TypeScript';
 
 export const mySkills = [
-  <ReactIcon key="react" />,
-  <Bun key="bun" />,
-  <JavaScript key="javascript" />,
-  <TypeScript key="typescript" />,
-  <MongoDB key="mongodb" />,
-  <NextJs key="nextjs" />,
-  <NodeJs key="nodejs" />,
-  <PostgreSQL key="postgresql" />,
-  <Prisma key="prisma" />,
+  { name: 'React', icon: <ReactIcon key="react" /> },
+  { name: 'Bun', icon: <Bun key="bun" /> },
+  { name: 'JavaScript', icon: <JavaScript key="javascript" /> },
+  { name: 'TypeScript', icon: <TypeScript key="typescript" /> },
+  { name: 'MongoDB', icon: <MongoDB key="mongodb" /> },
+  { name: 'Next.js', icon: <NextJs key="nextjs" /> },
+  { name: 'Node.js', icon: <NodeJs key="nodejs" /> },
+  { name: 'PostgreSQL', icon: <PostgreSQL key="postgresql" /> },
+  { name: 'Prisma', icon: <Prisma key="prisma" /> },
 ];
 
 export const about = {
-  name: 'Ramkrishna Swarnkar',
-  description: `I'm a Full Stack web developer and Open Source Contributor, I love building products to solve real-world problems. I'm specialized in building MVP's.`,
+  name: 'Mikael Macabali',
+  description: `I'm a Full Stack web developer passionate about building interactive and beautiful web experiences. I love turning ideas into real products using modern technologies.`,
 };

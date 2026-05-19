@@ -1,6 +1,6 @@
 import Container from '@/components/common/Container';
+import { SectionRule } from '@/components/common/SectionRule';
 import { ExperienceList } from '@/components/experience/ExperienceList';
-import { Separator } from '@/components/ui/separator';
 import { experiences } from '@/config/Experience';
 import { generateMetadata as getMetadata } from '@/config/Meta';
 import { Metadata } from 'next';
@@ -23,37 +23,51 @@ export const metadata: Metadata = {
 
 export default function WorkExperiencePage() {
   return (
-    <Container className="py-16">
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="space-y-4 text-center">
-          <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">
-            Work Experience
-          </h1>
-          <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
-            My work experiences across different companies and roles.
-          </p>
-        </div>
-
-        <Separator />
-
-        {/* Work Experiences */}
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold">
-              All Experiences
-              {experiences.length > 0 && (
-                <span className="text-muted-foreground ml-2 text-sm font-normal">
-                  ({experiences.length}{' '}
-                  {experiences.length === 1 ? 'experience' : 'experiences'})
-                </span>
-              )}
-            </h2>
+    <main>
+      <section style={{ position: 'relative', padding: '80px 0 40px' }}>
+        <Container>
+          <SectionRule
+            roman="E."
+            left="Experience / Career"
+            middle="Professional journey"
+            right={`${experiences.length} roles`}
+          />
+          <div data-reveal>
+            <span className="label">
+              Experience <span className="ix">&middot; All</span>
+            </span>
+            <h1
+              style={{
+                fontFamily: 'var(--sans)',
+                fontWeight: 800,
+                letterSpacing: '-0.028em',
+                color: 'var(--ink)',
+                lineHeight: 1.0,
+                fontSize: 'clamp(40px, 5vw, 66px)',
+                margin: '22px 0 20px',
+              }}
+            >
+              Work{' '}
+              <em
+                style={{
+                  fontFamily: 'var(--serif)',
+                  fontStyle: 'italic',
+                  fontWeight: 500,
+                }}
+              >
+                experience
+              </em>{' '}
+              and roles<span style={{ color: 'var(--coral)' }}>.</span>
+            </h1>
           </div>
+        </Container>
+      </section>
 
+      <Container>
+        <div style={{ paddingBottom: 80 }}>
           <ExperienceList experiences={experiences} />
         </div>
-      </div>
-    </Container>
+      </Container>
+    </main>
   );
 }
