@@ -1,6 +1,14 @@
 import React from 'react';
 
-export default function SideRails() {
+interface SideRailsProps {
+  rightText?: string;
+  leftText?: string;
+}
+
+export default function SideRails({
+  rightText = 'Mikael Macabali \u2014 Portfolio \u00b7 2026 \u00b7 MIT',
+  leftText = 'Full-Stack \u00b7 Design \u00b7 Engineering \u00b7 Manila',
+}: SideRailsProps) {
   return (
     <>
       <div
@@ -32,7 +40,7 @@ export default function SideRails() {
             whiteSpace: 'nowrap',
           }}
         >
-          Mikael Macabali &mdash; Portfolio &middot; 2026 &middot; MIT
+          {rightText}
         </span>
       </div>
       <div
@@ -63,7 +71,7 @@ export default function SideRails() {
             whiteSpace: 'nowrap',
           }}
         >
-          Full-Stack &middot; Design &middot; Engineering &middot; Manila
+          {leftText}
         </span>
       </div>
     </>

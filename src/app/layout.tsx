@@ -38,6 +38,20 @@ export default async function RootLayout({
     coordinates?: string;
   } | null;
 
+  const topbarConfig = (await getSiteConfig('topbar')) as {
+    version?: string;
+    categories?: string;
+    license?: string;
+    githubUrl?: string;
+    statusText?: string;
+    languages?: string;
+  } | null;
+
+  const siderailsConfig = (await getSiteConfig('siderails')) as {
+    rightText?: string;
+    leftText?: string;
+  } | null;
+
   return (
     <ViewTransitions>
       <html lang="en">
@@ -62,8 +76,18 @@ export default async function RootLayout({
         >
           <ReactLenis root>
             <div className="shell">
-              <SideRails />
-              <Topbar />
+              <SideRails
+                rightText={siderailsConfig?.rightText}
+                leftText={siderailsConfig?.leftText}
+              />
+              <Topbar
+                version={topbarConfig?.version}
+                categories={topbarConfig?.categories}
+                license={topbarConfig?.license}
+                githubUrl={topbarConfig?.githubUrl}
+                statusText={topbarConfig?.statusText}
+                languages={topbarConfig?.languages}
+              />
               <Navbar
                 brandName={navbarConfig?.brandName}
                 title={navbarConfig?.title}

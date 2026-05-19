@@ -1,6 +1,22 @@
 import React from 'react';
 
-export default function Topbar() {
+interface TopbarProps {
+  version?: string;
+  categories?: string;
+  license?: string;
+  githubUrl?: string;
+  statusText?: string;
+  languages?: string;
+}
+
+export default function Topbar({
+  version = 'M / 2026',
+  categories = 'Code \u00b7 Design \u00b7 Engineering',
+  license = 'MIT \u00b7 Made on Earth',
+  githubUrl = 'https://github.com/mikaelmacabali',
+  statusText = 'Open \u00b7 v1.0',
+  languages = 'EN \u00b7 PH',
+}: TopbarProps) {
   return (
     <div
       className="border-b"
@@ -27,24 +43,21 @@ export default function Topbar() {
         }}
       >
         <span>
-          <b style={{ color: 'var(--ink)', fontWeight: 600 }}>M / 2026</b>{' '}
+          <b style={{ color: 'var(--ink)', fontWeight: 600 }}>{version}</b>{' '}
           &nbsp;&middot;&nbsp; Portfolio / 2026
         </span>
         <span className="mid" style={{ display: 'inline-flex', gap: 26 }}>
           <span>
-            Filed under{' '}
-            <b style={{ color: 'var(--coral)' }}>
-              Code &middot; Design &middot; Engineering
-            </b>
+            Filed under <b style={{ color: 'var(--coral)' }}>{categories}</b>
           </span>
-          <span>MIT &middot; Made on Earth</span>
+          <span>{license}</span>
         </span>
         <span
           className="right"
           style={{ display: 'inline-flex', gap: 18, alignItems: 'center' }}
         >
           <a
-            href="https://github.com/mikaelmacabali"
+            href={githubUrl}
             target="_blank"
             rel="noreferrer noopener"
             style={{
@@ -55,11 +68,14 @@ export default function Topbar() {
             }}
           >
             <span className="pulse-dot" style={{ marginRight: 6 }} />
-            Open &middot; v1.0
+            {statusText}
           </a>
           <span>
-            <b style={{ color: 'var(--ink)', fontWeight: 600 }}>EN</b> &middot;
-            PH
+            <b style={{ color: 'var(--ink)', fontWeight: 600 }}>
+              {languages.split(' \u00b7 ')[0]}
+            </b>{' '}
+            &middot;
+            {languages.split(' \u00b7 ')[1] || ''}
           </span>
         </span>
       </div>
