@@ -27,7 +27,11 @@ const steps = [
 
 export default function Method() {
   return (
-    <section id="method" style={{ position: 'relative', padding: '130px 0' }}>
+    <section
+      id="method"
+      className="section-padded"
+      style={{ position: 'relative' }}
+    >
       <Container>
         <div className="sec-rule">
           <span className="roman">V.</span>
@@ -40,9 +44,8 @@ export default function Method() {
         </div>
 
         <div
+          className="grid-2-col-asym"
           style={{
-            display: 'grid',
-            gridTemplateColumns: '1.4fr 1fr',
             gap: 60,
             alignItems: 'start',
             marginBottom: 80,
@@ -121,10 +124,8 @@ export default function Method() {
         </div>
 
         <div
-          className="method-grid"
+          className="method-grid grid-4-col"
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
             gap: 50,
             position: 'relative',
           }}

@@ -2,6 +2,7 @@ import Container from '@/components/common/Container';
 import { ProjectContent } from '@/components/projects/ProjectContent';
 import { ProjectNavigation } from '@/components/projects/ProjectNavigation';
 import { siteConfig } from '@/config/Meta';
+import { iconRegistry } from '@/lib/icons';
 import {
   getProjectCaseStudyBySlug,
   getProjectCaseStudySlugs,
@@ -138,9 +139,8 @@ export default async function ProjectCaseStudyPage({
                 Related Projects
               </h2>
               <div
+                className="grid-2-col"
                 style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
                   gap: 22,
                 }}
               >
@@ -150,7 +150,7 @@ export default async function ProjectCaseStudyPage({
                     title: string;
                     description: string;
                     status: string;
-                    technologies: { name: string }[];
+                    technologies: { name: string; iconKey: string }[];
                   }) => (
                     <Link
                       key={project.slug}
@@ -223,21 +223,28 @@ export default async function ProjectCaseStudyPage({
                       >
                         {project.technologies
                           .slice(0, 3)
-                          .map((tech: { name: string }) => (
-                            <span
-                              key={tech.name}
-                              style={{
-                                padding: '3px 8px',
-                                borderRadius: 999,
-                                border: '1px solid var(--line)',
-                                fontFamily: 'var(--sans)',
-                                fontSize: 10,
-                                color: 'var(--ink-faint)',
-                              }}
-                            >
-                              {tech.name}
-                            </span>
-                          ))}
+                          .map((tech: { name: string; iconKey: string }) => {
+                            const Icon = iconRegistry[tech.iconKey];
+                            return (
+                              <span
+                                key={tech.name}
+                                style={{
+                                  padding: '3px 8px',
+                                  borderRadius: 999,
+                                  border: '1px solid var(--line)',
+                                  fontFamily: 'var(--sans)',
+                                  fontSize: 10,
+                                  color: 'var(--ink-faint)',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: 4,
+                                }}
+                              >
+                                {Icon && <Icon className="size-3" />}
+                                {tech.name}
+                              </span>
+                            );
+                          })}
                       </div>
                     </Link>
                   ),

@@ -9,7 +9,7 @@ export default async function Blog() {
   const featured = posts.slice(0, 2);
 
   return (
-    <section style={{ position: 'relative', padding: '130px 0' }}>
+    <section className="section-padded" style={{ position: 'relative' }}>
       <Container>
         <div className="sec-rule">
           <span className="roman">XII.</span>
@@ -61,9 +61,8 @@ export default async function Blog() {
         </div>
 
         <div
+          className="grid-2-col"
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
             gap: 22,
             marginTop: 22,
           }}

@@ -1,5 +1,7 @@
 'use client';
 
+import { IconPicker } from '@/components/admin/IconPicker';
+import { iconRegistry } from '@/lib/icons';
 import React, { useEffect, useState } from 'react';
 
 interface Gear {
@@ -35,6 +37,7 @@ export default function GearsPage() {
   const handleSave = async () => {
     const method = form.id ? 'PUT' : 'POST';
     const url = form.id ? `/api/admin/gears/${form.id}` : '/api/admin/gears';
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ...body } = form;
     const res = await fetch(url, {
       method,
@@ -135,14 +138,7 @@ export default function GearsPage() {
             marginBottom: 16,
           }}
         >
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr 1fr',
-              gap: 16,
-              marginBottom: 16,
-            }}
-          >
+          <div className="admin-grid-4" style={{ marginBottom: 16 }}>
             <div>
               <label
                 style={{
@@ -162,6 +158,7 @@ export default function GearsPage() {
                 onChange={(e) =>
                   setForm((f) => ({ ...f, name: e.target.value }))
                 }
+                placeholder="e.g. MacBook Pro"
               />
             </div>
             <div>
@@ -176,13 +173,12 @@ export default function GearsPage() {
                   textTransform: 'uppercase',
                 }}
               >
-                Icon Key
+                Icon
               </label>
-              <input
+              <IconPicker
                 value={form.iconKey || ''}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, iconKey: e.target.value }))
-                }
+                onChange={(val) => setForm((f) => ({ ...f, iconKey: val }))}
+                placeholder="Choose icon..."
               />
             </div>
             <div>
@@ -204,6 +200,7 @@ export default function GearsPage() {
                 onChange={(e) =>
                   setForm((f) => ({ ...f, href: e.target.value }))
                 }
+                placeholder="https://..."
               />
             </div>
             <div>
@@ -228,7 +225,7 @@ export default function GearsPage() {
               >
                 {categories.map((c) => (
                   <option key={c} value={c}>
-                    {c}
+                    {c.charAt(0).toUpperCase() + c.slice(1)}
                   </option>
                 ))}
               </select>
@@ -270,84 +267,106 @@ export default function GearsPage() {
               {cat}s
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {items.map((gear) => (
-                <div
-                  key={gear.id}
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr 1fr auto',
-                    gap: 16,
-                    alignItems: 'center',
-                    padding: '12px 20px',
-                    background: 'var(--bone)',
-                    borderRadius: 10,
-                    border: '1px solid var(--line)',
-                  }}
-                >
-                  <span
+              {items.map((gear) => {
+                const Icon = gear.iconKey ? iconRegistry[gear.iconKey] : null;
+                return (
+                  <div
+                    key={gear.id}
                     style={{
-                      fontFamily: 'var(--sans)',
-                      fontWeight: 600,
-                      fontSize: 13,
-                      color: 'var(--ink)',
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr 1fr auto',
+                      gap: 16,
+                      alignItems: 'center',
+                      padding: '12px 20px',
+                      background: 'var(--bone)',
+                      borderRadius: 10,
+                      border: '1px solid var(--line)',
                     }}
                   >
-                    {gear.name}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: 'var(--mono)',
-                      fontSize: 11,
-                      color: 'var(--ink-faint)',
-                    }}
-                  >
-                    {gear.iconKey || '—'}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: 'var(--sans)',
-                      fontSize: 11,
-                      color: 'var(--ink-faint)',
-                    }}
-                  >
-                    {gear.href || '—'}
-                  </span>
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <button
-                      onClick={() => {
-                        setForm(gear);
-                        setEditing(gear);
-                      }}
+                    <span
                       style={{
-                        padding: '4px 10px',
-                        borderRadius: 6,
-                        border: '1px solid var(--line)',
-                        background: 'transparent',
                         fontFamily: 'var(--sans)',
-                        fontSize: 10,
-                        cursor: 'pointer',
+                        fontWeight: 600,
+                        fontSize: 13,
+                        color: 'var(--ink)',
                       }}
                     >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(gear.id)}
+                      {gear.name}
+                    </span>
+                    <span
                       style={{
-                        padding: '4px 10px',
-                        borderRadius: 6,
-                        border: '1px solid var(--coral)',
-                        background: 'transparent',
-                        fontFamily: 'var(--sans)',
-                        fontSize: 10,
-                        cursor: 'pointer',
-                        color: 'var(--coral)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        fontFamily: 'var(--mono)',
+                        fontSize: 11,
+                        color: 'var(--ink-faint)',
                       }}
                     >
-                      Delete
-                    </button>
+                      {Icon && (
+                        <span
+                          style={{
+                            width: 20,
+                            height: 20,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 4,
+                            background: 'var(--paper)',
+                            border: '1px solid var(--line-soft)',
+                          }}
+                        >
+                          <Icon className="size-3" />
+                        </span>
+                      )}
+                      {gear.iconKey || '—'}
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: 'var(--sans)',
+                        fontSize: 11,
+                        color: 'var(--ink-faint)',
+                      }}
+                    >
+                      {gear.href || '—'}
+                    </span>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button
+                        onClick={() => {
+                          setForm(gear);
+                          setEditing(gear);
+                        }}
+                        style={{
+                          padding: '4px 10px',
+                          borderRadius: 6,
+                          border: '1px solid var(--line)',
+                          background: 'transparent',
+                          fontFamily: 'var(--sans)',
+                          fontSize: 10,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(gear.id)}
+                        style={{
+                          padding: '4px 10px',
+                          borderRadius: 6,
+                          border: '1px solid var(--coral)',
+                          background: 'transparent',
+                          fontFamily: 'var(--sans)',
+                          fontSize: 10,
+                          cursor: 'pointer',
+                          color: 'var(--coral)',
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         );

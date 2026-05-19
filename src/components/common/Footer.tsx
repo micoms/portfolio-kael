@@ -19,9 +19,8 @@ export default function Footer() {
     >
       <Container>
         <div
+          className="grid-footer"
           style={{
-            display: 'grid',
-            gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr',
             gap: 40,
             marginBottom: 60,
           }}

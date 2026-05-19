@@ -13,7 +13,7 @@ const partners = [
 
 export default function Testimonial() {
   return (
-    <section style={{ position: 'relative', padding: '130px 0' }}>
+    <section className="section-padded" style={{ position: 'relative' }}>
       <Container>
         <div className="sec-rule">
           <span className="roman">VII.</span>
@@ -26,9 +26,8 @@ export default function Testimonial() {
         </div>
 
         <div
+          className="grid-testimonial"
           style={{
-            display: 'grid',
-            gridTemplateColumns: '1.2fr 1fr',
             gap: 80,
             alignItems: 'center',
           }}
@@ -140,10 +139,8 @@ export default function Testimonial() {
             </p>
 
             <div
-              className="partners"
+              className="partners grid-6-col"
               style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(6, 1fr)',
                 gap: 22,
                 alignItems: 'end',
               }}

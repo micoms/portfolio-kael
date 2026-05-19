@@ -7,7 +7,7 @@ export default function Work() {
   const featured = projects.slice(0, 2);
 
   return (
-    <section style={{ position: 'relative', padding: '130px 0' }}>
+    <section className="section-padded" style={{ position: 'relative' }}>
       <div
         style={{
           background: '#15140f',
@@ -69,9 +69,8 @@ export default function Work() {
         </div>
 
         <div
+          className="grid-work"
           style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1.05fr 0.85fr',
             gap: 48,
             alignItems: 'center',
             position: 'relative',

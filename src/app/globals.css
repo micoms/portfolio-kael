@@ -482,6 +482,210 @@ body::before {
 .prose th, .prose td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; }
 .prose th { background: var(--bone); font-weight: 600; }
 
+/* ---------- Landing Responsive Grids ---------- */
+.grid-2-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.grid-2-col-asym {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+}
+.grid-3-col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.grid-4-col {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.grid-5-col {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+.grid-6-col {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+}
+.grid-experience {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
+.grid-about {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+}
+.grid-capabilities {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.grid-work {
+  display: grid;
+  grid-template-columns: 1fr 1.05fr 0.85fr;
+}
+.grid-testimonial {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+}
+.grid-cta {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+}
+.grid-footer {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+}
+
+/* Section padding responsive */
+.section-padded {
+  padding: 130px 0;
+}
+.sec-rule {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (max-width: 1024px) {
+  .grid-5-col {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .grid-6-col {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .grid-4-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .grid-work {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-2-col,
+  .grid-2-col-asym,
+  .grid-3-col,
+  .grid-4-col,
+  .grid-5-col,
+  .grid-6-col,
+  .grid-experience,
+  .grid-about,
+  .grid-capabilities,
+  .grid-work,
+  .grid-testimonial,
+  .grid-cta,
+  .grid-footer {
+    grid-template-columns: 1fr;
+  }
+  .section-padded {
+    padding: 60px 0;
+  }
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .hero-image-area {
+    height: 50vh !important;
+    max-height: 400px !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* ---------- Admin Form Styles ---------- */
+.admin-layout input,
+.admin-layout select,
+.admin-layout textarea {
+  font-family: var(--sans);
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  width: 100%;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+.admin-layout input:focus,
+.admin-layout select:focus,
+.admin-layout textarea:focus {
+  border-color: var(--ink-faint);
+  box-shadow: 0 0 0 2px rgba(139, 134, 118, 0.15);
+}
+.admin-layout input::placeholder,
+.admin-layout textarea::placeholder {
+  color: var(--ink-faint);
+}
+.admin-layout select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b8676' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 30px;
+}
+.admin-layout textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Admin responsive grid helpers */
+.admin-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+.admin-grid-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 768px) {
+  .admin-grid-3 {
+    grid-template-columns: 1fr;
+  }
+  .admin-grid-4 {
+    grid-template-columns: 1fr;
+  }
+  .admin-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Admin mobile sidebar */
+.admin-mobile-toggle {
+  display: none;
+}
+@media (max-width: 768px) {
+  .admin-mobile-toggle {
+    display: flex;
+  }
+  .admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    width: 260px;
+  }
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+  .admin-sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(21, 20, 15, 0.4);
+    z-index: 99;
+  }
+  .admin-sidebar-backdrop.open {
+    display: block;
+  }
+  .admin-main {
+    padding: 16px 20px !important;
+  }
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1280px) {
   .container-atelier { padding: 0 44px; }

@@ -18,7 +18,7 @@ const journeyItems = [
 
 export default function Journey() {
   return (
-    <section style={{ position: 'relative', padding: '130px 0' }}>
+    <section className="section-padded" style={{ position: 'relative' }}>
       <Container>
         <div className="sec-rule">
           <span className="roman">XIV.</span>
@@ -70,9 +70,8 @@ export default function Journey() {
         </div>
 
         <div
+          className="grid-2-col"
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
             gap: 22,
             marginTop: 22,
           }}

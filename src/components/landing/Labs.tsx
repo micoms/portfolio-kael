@@ -62,7 +62,11 @@ export default function Labs() {
   };
 
   return (
-    <section id="labs" style={{ position: 'relative', padding: '130px 0' }}>
+    <section
+      id="labs"
+      className="section-padded"
+      style={{ position: 'relative' }}
+    >
       <Container>
         <div className="sec-rule">
           <span className="roman">IV.</span>
@@ -75,9 +79,8 @@ export default function Labs() {
         </div>
 
         <div
+          className="grid-2-col-asym"
           style={{
-            display: 'grid',
-            gridTemplateColumns: '1.4fr 1fr',
             gap: 60,
             alignItems: 'end',
             marginBottom: 48,
@@ -222,10 +225,8 @@ export default function Labs() {
         </div>
 
         <div
-          className="labs-grid"
+          className="labs-grid grid-5-col"
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(5, 1fr)',
             gap: 22,
           }}
         >

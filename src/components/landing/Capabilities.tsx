@@ -82,7 +82,8 @@ export default function Capabilities() {
   return (
     <section
       id="capabilities"
-      style={{ position: 'relative', padding: '130px 0' }}
+      className="section-padded"
+      style={{ position: 'relative' }}
     >
       <Container>
         <div className="sec-rule">
@@ -96,9 +97,8 @@ export default function Capabilities() {
         </div>
 
         <div
+          className="grid-capabilities"
           style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
             gap: 70,
             alignItems: 'center',
           }}
@@ -221,10 +221,8 @@ export default function Capabilities() {
             </p>
 
             <div
-              className="cards"
+              className="cards grid-2-col"
               style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
                 gap: 18,
                 marginTop: 22,
               }}

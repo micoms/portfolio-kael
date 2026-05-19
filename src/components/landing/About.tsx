@@ -13,7 +13,7 @@ export default async function About() {
     ((aboutData as Record<string, unknown>)?.description as string) || '';
 
   return (
-    <section style={{ position: 'relative', padding: '130px 0' }}>
+    <section className="section-padded" style={{ position: 'relative' }}>
       <Container>
         <div className="sec-rule">
           <span className="roman">II.</span>
@@ -26,9 +26,8 @@ export default async function About() {
         </div>
 
         <div
+          className="grid-about"
           style={{
-            display: 'grid',
-            gridTemplateColumns: '1.05fr 1fr',
             gap: 80,
             alignItems: 'center',
           }}

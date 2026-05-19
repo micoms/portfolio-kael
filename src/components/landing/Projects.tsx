@@ -1,4 +1,5 @@
 import { getFeaturedProjects } from '@/lib/db/projects';
+import { iconRegistry } from '@/lib/icons';
 import { Link } from 'next-view-transitions';
 import Image from 'next/image';
 import React from 'react';
@@ -9,7 +10,7 @@ export default async function Projects() {
   const projects = await getFeaturedProjects(4);
 
   return (
-    <section style={{ position: 'relative', padding: '130px 0' }}>
+    <section className="section-padded" style={{ position: 'relative' }}>
       <Container>
         <div className="sec-rule">
           <span className="roman">XI.</span>
@@ -61,9 +62,8 @@ export default async function Projects() {
         </div>
 
         <div
+          className="grid-2-col"
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
             gap: 22,
             marginTop: 22,
           }}
@@ -174,22 +174,29 @@ export default async function Projects() {
                   marginBottom: 14,
                 }}
               >
-                {project.technologies.slice(0, 4).map((tech) => (
-                  <span
-                    key={tech.name}
-                    style={{
-                      padding: '3px 8px',
-                      borderRadius: 999,
-                      border: '1px solid var(--line)',
-                      fontFamily: 'var(--sans)',
-                      fontSize: 10,
-                      color: 'var(--ink-faint)',
-                      letterSpacing: '0.04em',
-                    }}
-                  >
-                    {tech.name}
-                  </span>
-                ))}
+                {project.technologies.slice(0, 4).map((tech) => {
+                  const Icon = iconRegistry[tech.iconKey];
+                  return (
+                    <span
+                      key={tech.name}
+                      style={{
+                        padding: '3px 8px',
+                        borderRadius: 999,
+                        border: '1px solid var(--line)',
+                        fontFamily: 'var(--sans)',
+                        fontSize: 10,
+                        color: 'var(--ink-faint)',
+                        letterSpacing: '0.04em',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 4,
+                      }}
+                    >
+                      {Icon && <Icon className="size-3" />}
+                      {tech.name}
+                    </span>
+                  );
+                })}
               </div>
               <span
                 style={{

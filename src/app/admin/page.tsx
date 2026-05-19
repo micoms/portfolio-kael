@@ -60,6 +60,7 @@ export default async function AdminDashboard() {
           gridTemplateColumns: 'repeat(3, 1fr)',
           gap: 16,
         }}
+        className="admin-stats-grid"
       >
         {stats.map((stat) => (
           <a

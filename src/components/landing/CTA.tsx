@@ -4,7 +4,11 @@ import Container from '../common/Container';
 
 export default function CTA() {
   return (
-    <section id="contact" style={{ position: 'relative', padding: '130px 0' }}>
+    <section
+      id="contact"
+      className="section-padded"
+      style={{ position: 'relative' }}
+    >
       <Container>
         <div className="sec-rule">
           <span className="roman">VIII.</span>
@@ -17,9 +21,8 @@ export default function CTA() {
         </div>
 
         <div
+          className="grid-cta"
           style={{
-            display: 'grid',
-            gridTemplateColumns: '1.05fr 1fr',
             gap: 50,
             alignItems: 'center',
           }}

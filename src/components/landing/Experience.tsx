@@ -1,4 +1,5 @@
 import { getFeaturedExperiences } from '@/lib/db/experience';
+import { iconRegistry } from '@/lib/icons';
 import { Link } from 'next-view-transitions';
 import Image from 'next/image';
 import React from 'react';
@@ -9,7 +10,7 @@ export default async function ExperienceSection() {
   const experiences = await getFeaturedExperiences(3);
 
   return (
-    <section style={{ position: 'relative', padding: '130px 0' }}>
+    <section className="section-padded" style={{ position: 'relative' }}>
       <Container>
         <div className="sec-rule">
           <span className="roman">IX.</span>
@@ -79,21 +80,20 @@ export default async function ExperienceSection() {
                 description: string[];
                 startDate: string;
                 endDate: string;
-                technologies: { name: string }[];
+                technologies: { name: string; iconKey: string }[];
               },
               i: number,
             ) => (
               <div
                 key={exp.id}
                 data-reveal
+                className="grid-experience"
                 style={{
                   padding: '32px 30px',
                   background: 'var(--bone)',
                   borderRadius: 18,
                   boxShadow:
                     'var(--shadow), inset 0 0 0 1px rgba(21, 20, 15, 0.06)',
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 2fr',
                   gap: 40,
                   alignItems: 'start',
                 }}
@@ -200,22 +200,29 @@ export default async function ExperienceSection() {
                     ))}
                   </ul>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {exp.technologies.slice(0, 5).map((tech) => (
-                      <span
-                        key={tech.name}
-                        style={{
-                          padding: '4px 10px',
-                          borderRadius: 999,
-                          border: '1px solid var(--line)',
-                          fontFamily: 'var(--sans)',
-                          fontSize: 11,
-                          color: 'var(--ink-mute)',
-                          letterSpacing: '0.04em',
-                        }}
-                      >
-                        {tech.name}
-                      </span>
-                    ))}
+                    {exp.technologies.slice(0, 5).map((tech) => {
+                      const Icon = iconRegistry[tech.iconKey];
+                      return (
+                        <span
+                          key={tech.name}
+                          style={{
+                            padding: '4px 10px',
+                            borderRadius: 999,
+                            border: '1px solid var(--line)',
+                            fontFamily: 'var(--sans)',
+                            fontSize: 11,
+                            color: 'var(--ink-mute)',
+                            letterSpacing: '0.04em',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 5,
+                          }}
+                        >
+                          {Icon && <Icon className="size-3" />}
+                          {tech.name}
+                        </span>
+                      );
+                    })}
                   </div>
                 </div>
               </div>

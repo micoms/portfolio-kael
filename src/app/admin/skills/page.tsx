@@ -1,5 +1,7 @@
 'use client';
 
+import { IconPicker } from '@/components/admin/IconPicker';
+import { iconRegistry } from '@/lib/icons';
 import React, { useEffect, useState } from 'react';
 
 interface Skill {
@@ -125,14 +127,7 @@ export default function SkillsPage() {
             marginBottom: 16,
           }}
         >
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr',
-              gap: 16,
-              marginBottom: 16,
-            }}
-          >
+          <div className="admin-grid-3" style={{ marginBottom: 16 }}>
             <div>
               <label
                 style={{
@@ -152,6 +147,7 @@ export default function SkillsPage() {
                 onChange={(e) =>
                   setForm((f) => ({ ...f, name: e.target.value }))
                 }
+                placeholder="e.g. React"
               />
             </div>
             <div>
@@ -166,13 +162,11 @@ export default function SkillsPage() {
                   textTransform: 'uppercase',
                 }}
               >
-                Icon Key
+                Icon
               </label>
-              <input
+              <IconPicker
                 value={form.iconKey}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, iconKey: e.target.value }))
-                }
+                onChange={(val) => setForm((f) => ({ ...f, iconKey: val }))}
               />
             </div>
             <div>
@@ -194,6 +188,7 @@ export default function SkillsPage() {
                 onChange={(e) =>
                   setForm((f) => ({ ...f, href: e.target.value }))
                 }
+                placeholder="https://..."
               />
             </div>
           </div>
@@ -215,84 +210,106 @@ export default function SkillsPage() {
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        {skills.map((skill) => (
-          <div
-            key={skill.id}
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr auto',
-              gap: 16,
-              alignItems: 'center',
-              padding: '12px 20px',
-              background: 'var(--bone)',
-              borderRadius: 10,
-              border: '1px solid var(--line)',
-            }}
-          >
-            <span
+        {skills.map((skill) => {
+          const Icon = iconRegistry[skill.iconKey];
+          return (
+            <div
+              key={skill.id}
               style={{
-                fontFamily: 'var(--sans)',
-                fontWeight: 600,
-                fontSize: 13,
-                color: 'var(--ink)',
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr 1fr auto',
+                gap: 16,
+                alignItems: 'center',
+                padding: '12px 20px',
+                background: 'var(--bone)',
+                borderRadius: 10,
+                border: '1px solid var(--line)',
               }}
             >
-              {skill.name}
-            </span>
-            <span
-              style={{
-                fontFamily: 'var(--mono)',
-                fontSize: 11,
-                color: 'var(--ink-faint)',
-              }}
-            >
-              {skill.iconKey}
-            </span>
-            <span
-              style={{
-                fontFamily: 'var(--sans)',
-                fontSize: 11,
-                color: 'var(--ink-faint)',
-              }}
-            >
-              {skill.href || '—'}
-            </span>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button
-                onClick={() => {
-                  setForm(skill);
-                  setEditing(skill);
-                }}
+              <span
                 style={{
-                  padding: '4px 10px',
-                  borderRadius: 6,
-                  border: '1px solid var(--line)',
-                  background: 'transparent',
                   fontFamily: 'var(--sans)',
-                  fontSize: 10,
-                  cursor: 'pointer',
+                  fontWeight: 600,
+                  fontSize: 13,
+                  color: 'var(--ink)',
                 }}
               >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDelete(skill.id)}
+                {skill.name}
+              </span>
+              <span
                 style={{
-                  padding: '4px 10px',
-                  borderRadius: 6,
-                  border: '1px solid var(--coral)',
-                  background: 'transparent',
-                  fontFamily: 'var(--sans)',
-                  fontSize: 10,
-                  cursor: 'pointer',
-                  color: 'var(--coral)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  fontFamily: 'var(--mono)',
+                  fontSize: 11,
+                  color: 'var(--ink-faint)',
                 }}
               >
-                Delete
-              </button>
+                {Icon && (
+                  <span
+                    style={{
+                      width: 20,
+                      height: 20,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 4,
+                      background: 'var(--paper)',
+                      border: '1px solid var(--line-soft)',
+                    }}
+                  >
+                    <Icon className="size-3" />
+                  </span>
+                )}
+                {skill.iconKey}
+              </span>
+              <span
+                style={{
+                  fontFamily: 'var(--sans)',
+                  fontSize: 11,
+                  color: 'var(--ink-faint)',
+                }}
+              >
+                {skill.href || '—'}
+              </span>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button
+                  onClick={() => {
+                    setForm(skill);
+                    setEditing(skill);
+                  }}
+                  style={{
+                    padding: '4px 10px',
+                    borderRadius: 6,
+                    border: '1px solid var(--line)',
+                    background: 'transparent',
+                    fontFamily: 'var(--sans)',
+                    fontSize: 10,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(skill.id)}
+                  style={{
+                    padding: '4px 10px',
+                    borderRadius: 6,
+                    border: '1px solid var(--coral)',
+                    background: 'transparent',
+                    fontFamily: 'var(--sans)',
+                    fontSize: 10,
+                    cursor: 'pointer',
+                    color: 'var(--coral)',
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

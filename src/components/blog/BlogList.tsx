@@ -46,12 +46,10 @@ export function BlogList({ posts, className = '' }: BlogListProps) {
 
   return (
     <div
+      className={`grid-2-col ${className || ''}`}
       style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(2, 1fr)',
         gap: 22,
       }}
-      className={className}
     >
       {posts.map((post) => (
         <BlogCard key={post.slug} post={post} />

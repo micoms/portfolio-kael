@@ -1,42 +1,14 @@
 import { getSiteConfig } from '@/lib/db/settings';
 import { parseTemplate } from '@/lib/hero';
-import { Link } from 'next-view-transitions';
+import { iconRegistry } from '@/lib/icons';
 import Image from 'next/image';
 import React from 'react';
 
 import Container from '../common/Container';
 import Skill from '../common/Skill';
 
-const skillComponents: Record<string, React.ComponentType> = {};
-
-async function loadSkillComponents() {
-  const modules = await Promise.all([
-    import('@/components/technologies/TypeScript'),
-    import('@/components/technologies/ReactIcon'),
-    import('@/components/technologies/NextJs'),
-    import('@/components/technologies/Bun'),
-    import('@/components/technologies/PostgreSQL'),
-    import('@/components/technologies/NodeJs'),
-    import('@/components/technologies/MongoDB'),
-    import('@/components/technologies/Prisma'),
-    import('@/components/technologies/JavaScript'),
-  ]);
-  return {
-    TypeScript: modules[0].default,
-    ReactIcon: modules[1].default,
-    NextJs: modules[2].default,
-    Bun: modules[3].default,
-    PostgreSQL: modules[4].default,
-    NodeJs: modules[5].default,
-    MongoDB: modules[6].default,
-    Prisma: modules[7].default,
-    JavaScript: modules[8].default,
-  };
-}
-
 export default async function Hero() {
   const heroData = await getSiteConfig('hero');
-  const components = await loadSkillComponents();
 
   const name =
     ((heroData as Record<string, unknown>)?.name as string) || 'Mikael';
@@ -58,8 +30,7 @@ export default async function Hero() {
     const parts = parseTemplate(descriptionTemplate, skills);
     return parts.map((part) => {
       if (part.type === 'skill' && 'skill' in part && part.skill) {
-        const SkillComponent =
-          components[part.skill.component as keyof typeof components];
+        const SkillComponent = iconRegistry[part.skill.component];
         if (!SkillComponent) return null;
         return (
           <Skill key={part.key} name={part.skill.name} href={part.skill.href}>
@@ -85,7 +56,7 @@ export default async function Hero() {
 
   return (
     <section
-      className="hero"
+      className="hero section-padded"
       id="top"
       style={{
         position: 'relative',
@@ -108,9 +79,8 @@ export default async function Hero() {
       </Container>
       <Container>
         <div
+          className="grid-2-col-asym hero-grid"
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'minmax(0, 0.78fr) minmax(0, 1.22fr)',
             gap: 36,
             alignItems: 'stretch',
             width: '100%',
@@ -221,6 +191,7 @@ export default async function Hero() {
                 alignItems: 'center',
                 gap: 22,
                 marginBottom: 28,
+                flexWrap: 'wrap',
               }}
             >
               <div
@@ -377,6 +348,7 @@ export default async function Hero() {
 
           <div
             data-reveal="scale"
+            className="hero-image-area"
             style={{
               position: 'relative',
               height: 'calc(100vh - 160px)',
