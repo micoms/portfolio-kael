@@ -6,6 +6,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { iconRegistry } from '@/lib/icons';
 import { type Project } from '@/types/project';
 import { Link } from 'next-view-transitions';
 import Image from 'next/image';
@@ -224,24 +225,34 @@ export function ProjectCard({ project }: ProjectCardProps) {
             marginBottom: 14,
           }}
         >
-          {project.technologies.slice(0, 5).map((technology, index) => (
-            <Tooltip key={index}>
-              <TooltipTrigger>
-                <div
-                  style={{
-                    width: 20,
-                    height: 20,
-                    transition: 'transform 200ms',
-                  }}
-                >
-                  {technology.icon}
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{technology.name}</p>
-              </TooltipContent>
-            </Tooltip>
-          ))}
+          {project.technologies.slice(0, 5).map((technology, index) => {
+            const resolvedIcon =
+              technology.icon ||
+              (technology.iconKey
+                ? (() => {
+                    const I = iconRegistry[technology.iconKey];
+                    return I ? <I className="size-4" /> : null;
+                  })()
+                : null);
+            return (
+              <Tooltip key={index}>
+                <TooltipTrigger>
+                  <div
+                    style={{
+                      width: 20,
+                      height: 20,
+                      transition: 'transform 200ms',
+                    }}
+                  >
+                    {resolvedIcon}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{technology.name}</p>
+                </TooltipContent>
+              </Tooltip>
+            );
+          })}
         </div>
 
         {project.details && (

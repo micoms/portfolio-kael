@@ -1,10 +1,30 @@
-import { projects } from '@/config/Projects';
+import { getFeaturedProjects } from '@/lib/db/projects';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
-export default function Work() {
-  const featured = projects.slice(0, 2);
+export default async function Work() {
+  const dbProjects = await getFeaturedProjects(2);
+
+  const featured = dbProjects.map(
+    (p: {
+      title: string;
+      description: string;
+      image: string;
+      link?: string | null;
+      live?: string | null;
+      slug: string;
+      status: string;
+      technologies: { name: string; iconKey: string }[];
+    }) => ({
+      title: p.title,
+      description: p.description,
+      image: p.image,
+      link: p.link || p.live || '#',
+      slug: p.slug,
+      status: p.status,
+    }),
+  );
 
   return (
     <section className="section-padded" style={{ position: 'relative' }}>
@@ -192,7 +212,7 @@ export default function Work() {
                   }}
                 >
                   {String(i + 1).padStart(2, '0')} /{' '}
-                  {String(projects.length).padStart(2, '0')}
+                  {String(featured.length).padStart(2, '0')}
                 </span>
               </div>
               <h3

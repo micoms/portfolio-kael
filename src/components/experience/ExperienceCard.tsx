@@ -1,4 +1,5 @@
 import { type Experience } from '@/config/Experience';
+import { iconRegistry } from '@/lib/icons';
 import { cn } from '@/lib/utils';
 import { Link } from 'next-view-transitions';
 import Image from 'next/image';
@@ -258,11 +259,25 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
 
       {/* Technologies */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-        {experience.technologies.map((technology, techIndex: number) => (
-          <Skill key={techIndex} name={technology.name} href={technology.href}>
-            {technology.icon}
-          </Skill>
-        ))}
+        {experience.technologies.map((technology, techIndex: number) => {
+          const resolvedIcon =
+            technology.icon ||
+            (technology.iconKey
+              ? (() => {
+                  const I = iconRegistry[technology.iconKey];
+                  return I ? <I className="size-4" /> : null;
+                })()
+              : null);
+          return (
+            <Skill
+              key={techIndex}
+              name={technology.name}
+              href={technology.href}
+            >
+              {resolvedIcon}
+            </Skill>
+          );
+        })}
       </div>
     </div>
   );

@@ -21,7 +21,8 @@ import Vercel from '@/components/technologies/Vercel';
 export interface Technology {
   name: string;
   href: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
+  iconKey?: string;
 }
 
 export interface Experience {

@@ -1,8 +1,8 @@
 import Container from '@/components/common/Container';
 import { SectionRule } from '@/components/common/SectionRule';
 import ContactForm from '@/components/contact/ContactForm';
-import { contactConfig } from '@/config/Contact';
 import { generateMetadata as getMetadata } from '@/config/Meta';
+import { getSiteConfig } from '@/lib/db/settings';
 import { Metadata } from 'next';
 import React from 'react';
 
@@ -21,7 +21,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const config = (await getSiteConfig('contact')) as {
+    title?: string;
+    description?: string;
+  } | null;
+  const title = config?.title || 'Contact';
+  const description =
+    config?.description ||
+    'Get in touch with me. I will get back to you as soon as possible.';
+
   return (
     <main>
       <section style={{ position: 'relative', padding: '80px 0 60px' }}>
@@ -47,7 +56,7 @@ export default function ContactPage() {
                 margin: '22px 0 20px',
               }}
             >
-              {contactConfig.title}
+              {title}
               <span style={{ color: 'var(--coral)' }}>.</span>
             </h1>
             <p
@@ -59,7 +68,7 @@ export default function ContactPage() {
                 maxWidth: '48ch',
               }}
             >
-              {contactConfig.description}
+              {description}
             </p>
           </div>
         </Container>

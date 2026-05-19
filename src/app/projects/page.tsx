@@ -2,7 +2,7 @@ import Container from '@/components/common/Container';
 import { SectionRule } from '@/components/common/SectionRule';
 import { ProjectList } from '@/components/projects/ProjectList';
 import { generateMetadata as getMetadata } from '@/config/Meta';
-import { projects } from '@/config/Projects';
+import { getProjects } from '@/lib/db/projects';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -20,7 +20,41 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const dbProjects = await getProjects();
+
+  const projects = dbProjects.map(
+    (p: {
+      title: string;
+      description: string;
+      image: string;
+      video?: string | null;
+      link?: string | null;
+      github?: string | null;
+      live?: string | null;
+      slug: string;
+      status: string;
+      featured: boolean;
+      isPublished: boolean;
+      technologies: { name: string; iconKey: string }[];
+    }) => ({
+      title: p.title,
+      description: p.description,
+      image: p.image,
+      video: p.video || undefined,
+      link: p.link || p.live || '#',
+      github: p.github || undefined,
+      live: p.live || '#',
+      details: true,
+      projectDetailsPageSlug: `/projects/${p.slug}`,
+      isWorking: p.status === 'in-progress',
+      technologies: p.technologies.map((t) => ({
+        name: t.name,
+        iconKey: t.iconKey,
+      })),
+    }),
+  );
+
   return (
     <main>
       <section style={{ position: 'relative', padding: '80px 0 40px' }}>
@@ -56,7 +90,8 @@ export default function ProjectsPage() {
               >
                 projects
               </em>{' '}
-              and case studies<span style={{ color: 'var(--coral)' }}>.</span>
+              and case studies
+              <span style={{ color: 'var(--coral)' }}>.</span>
             </h1>
           </div>
         </Container>

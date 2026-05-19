@@ -1,10 +1,9 @@
 import Container from '@/components/common/Container';
 import { SectionRule } from '@/components/common/SectionRule';
 import { generateMetadata as getMetadata } from '@/config/Meta';
-import { resumeConfig } from '@/config/Resume';
+import { getSiteConfig } from '@/lib/db/settings';
 import { Download } from 'lucide-react';
 import { Metadata } from 'next';
-import { Link } from 'next-view-transitions';
 import React from 'react';
 
 export const metadata: Metadata = {
@@ -22,12 +21,17 @@ export const metadata: Metadata = {
   },
 };
 
-const driveFileId = resumeConfig.url.match(/\/d\/([a-zA-Z0-9_-]+)/)?.[1];
-const downloadUrl = driveFileId
-  ? `https://drive.google.com/uc?export=download&id=${driveFileId}`
-  : null;
+export default async function ResumePage() {
+  const config = (await getSiteConfig('resume')) as { url?: string } | null;
+  const resumeUrl =
+    config?.url ||
+    'https://drive.google.com/file/d/1ormIiMVpWGAMOZ3FZVj_XrKPkEmPlPQj/preview';
 
-export default function ResumePage() {
+  const driveFileId = resumeUrl.match(/\/d\/([a-zA-Z0-9_-]+)/)?.[1];
+  const downloadUrl = driveFileId
+    ? `https://drive.google.com/uc?export=download&id=${driveFileId}`
+    : null;
+
   return (
     <main>
       <section style={{ position: 'relative', padding: '80px 0 40px' }}>
@@ -63,7 +67,8 @@ export default function ResumePage() {
               >
                 resume
               </em>{' '}
-              and qualifications<span style={{ color: 'var(--coral)' }}>.</span>
+              and qualifications
+              <span style={{ color: 'var(--coral)' }}>.</span>
             </h1>
             {downloadUrl && (
               <a
@@ -92,7 +97,7 @@ export default function ResumePage() {
           }}
         >
           <iframe
-            src={resumeConfig.url}
+            src={resumeUrl}
             style={{ width: '100%', minHeight: '80vh', border: 'none' }}
             title="Resume"
             loading="lazy"
