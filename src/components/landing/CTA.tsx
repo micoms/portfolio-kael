@@ -1,8 +1,15 @@
+import { getSiteConfig } from '@/lib/db/settings';
 import React from 'react';
 
 import Container from '../common/Container';
 
-export default function CTA() {
+export default async function CTA() {
+  const dbCta = (await getSiteConfig('cta')) as {
+    email?: string;
+    title?: string;
+    description?: string;
+  } | null;
+  const email = dbCta?.email || 'mikaelmacabali@gmail.com';
   return (
     <section
       id="contact"
@@ -90,7 +97,7 @@ export default function CTA() {
             >
               <a
                 className="btn btn-primary"
-                href="mailto:mikaelmacabali@gmail.com"
+                href={`mailto:${email}`}
                 target="_blank"
                 rel="noreferrer noopener"
               >
@@ -102,7 +109,7 @@ export default function CTA() {
                 </span>
               </a>
               <a
-                href="mailto:mikaelmacabali@gmail.com"
+                href={`mailto:${email}`}
                 target="_blank"
                 rel="noreferrer noopener"
                 style={{
@@ -118,7 +125,7 @@ export default function CTA() {
                   textDecoration: 'none',
                 }}
               >
-                mikaelmacabali@gmail.com
+                {email}
                 <span
                   style={{
                     width: 22,

@@ -1,9 +1,10 @@
+import { getSiteConfig } from '@/lib/db/settings';
 import { Link } from 'next-view-transitions';
 import React from 'react';
 
 import Container from '../common/Container';
 
-const setupItems = [
+const defaultSetupItems = [
   {
     name: 'Gears Used',
     desc: 'Hardware and peripherals in my daily workflow',
@@ -16,7 +17,11 @@ const setupItems = [
   },
 ];
 
-export default function Setup() {
+export default async function Setup() {
+  const dbSetup = (await getSiteConfig('setupLinks')) as
+    | { name: string; desc: string; href: string }[]
+    | null;
+  const setupItems = dbSetup || defaultSetupItems;
   return (
     <section style={{ position: 'relative', padding: '130px 0' }}>
       <Container>

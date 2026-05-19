@@ -1,8 +1,9 @@
+import { getSiteConfig } from '@/lib/db/settings';
 import React from 'react';
 
 import Container from '../common/Container';
 
-const partners = [
+const defaultPartners = [
   { name: 'TypeScript', category: 'Language', icon: 'TS' },
   { name: 'React', category: 'Frontend', icon: 'Re' },
   { name: 'Next.js', category: 'Framework', icon: 'Nx' },
@@ -11,7 +12,14 @@ const partners = [
   { name: 'Docker', category: 'DevOps', icon: 'Dk' },
 ];
 
-export default function Testimonial() {
+export default async function Testimonial() {
+  const dbTestimonial = (await getSiteConfig('testimonial')) as {
+    quote?: string;
+    author?: string;
+    role?: string;
+    partners?: { name: string; category: string; icon?: string }[];
+  } | null;
+  const partners = dbTestimonial?.partners || defaultPartners;
   return (
     <section className="section-padded" style={{ position: 'relative' }}>
       <Container>

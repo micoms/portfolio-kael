@@ -1,8 +1,9 @@
+import { getSiteConfig } from '@/lib/db/settings';
 import React from 'react';
 
 import Container from '../common/Container';
 
-const steps = [
+const defaultSteps = [
   {
     num: '01',
     title: 'Discover',
@@ -25,7 +26,11 @@ const steps = [
   },
 ];
 
-export default function Method() {
+export default async function Method() {
+  const dbSteps = (await getSiteConfig('method')) as
+    | { num: string; title: string; desc: string }[]
+    | null;
+  const steps = dbSteps || defaultSteps;
   return (
     <section
       id="method"

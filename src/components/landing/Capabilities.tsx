@@ -1,8 +1,9 @@
+import { getSiteConfig } from '@/lib/db/settings';
 import React from 'react';
 
 import Container from '../common/Container';
 
-const capabilities = [
+const defaultCapabilities = [
   {
     num: '01',
     tag: 'Frontend',
@@ -78,7 +79,17 @@ const capabilities = [
   },
 ];
 
-export default function Capabilities() {
+export default async function Capabilities() {
+  const dbCapabilities = (await getSiteConfig('capabilities')) as
+    | {
+        num: string;
+        tag: string;
+        title: string;
+        desc: string;
+        icon?: React.ReactNode;
+      }[]
+    | null;
+  const capabilities = dbCapabilities || defaultCapabilities;
   return (
     <section
       id="capabilities"

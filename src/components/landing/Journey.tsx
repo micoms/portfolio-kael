@@ -1,9 +1,10 @@
+import { getSiteConfig } from '@/lib/db/settings';
 import { Link } from 'next-view-transitions';
 import React from 'react';
 
 import Container from '../common/Container';
 
-const journeyItems = [
+const defaultJourneyItems = [
   {
     name: 'My Journey',
     desc: 'The path from first line of code to professional development',
@@ -16,7 +17,11 @@ const journeyItems = [
   },
 ];
 
-export default function Journey() {
+export default async function Journey() {
+  const dbJourney = (await getSiteConfig('journey')) as
+    | { name: string; desc: string; href: string }[]
+    | null;
+  const journeyItems = dbJourney || defaultJourneyItems;
   return (
     <section className="section-padded" style={{ position: 'relative' }}>
       <Container>
