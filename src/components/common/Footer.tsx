@@ -1,14 +1,49 @@
 'use client';
 
-import { footerConfig } from '@/config/Footer';
-import { socialLinks } from '@/config/Hero';
-import { navbarConfig } from '@/config/Navbar';
 import { Link } from 'next-view-transitions';
 import React from 'react';
 
 import Container from './Container';
 
-export default function Footer() {
+interface SocialLink {
+  name: string;
+  href: string;
+}
+
+interface NavItem {
+  label: string;
+  href: string;
+}
+
+interface FooterProps {
+  brandName?: string;
+  description?: string;
+  navItems?: NavItem[];
+  socialLinks?: SocialLink[];
+  stackItems?: string[];
+  metaItems?: string[];
+  location?: string;
+  coordinates?: string;
+}
+
+export default function Footer({
+  brandName = 'Mikael Macabali',
+  description = 'Full-stack developer building thoughtful applications with modern web technologies. Based in Manila, working remotely with teams worldwide.',
+  navItems = [
+    { label: 'Work', href: '/work-experience' },
+    { label: 'Blogs', href: '/blog' },
+    { label: 'Projects', href: '/projects' },
+  ],
+  socialLinks = [
+    { name: 'GitHub', href: 'https://github.com/mikaelmacabali' },
+    { name: 'LinkedIn', href: 'https://linkedin.com/in/mikaelmacabali' },
+    { name: 'X / Twitter', href: 'https://x.com/mikaelmacabali' },
+  ],
+  stackItems = ['TypeScript', 'React', 'Next.js', 'Node.js'],
+  metaItems = ['Colophon', 'License', 'Source'],
+  location = 'Manila / Remote',
+  coordinates = '14.55\u00b0 N \u00b7 121.02\u00b0 E',
+}: FooterProps) {
   return (
     <footer
       style={{
@@ -60,7 +95,7 @@ export default function Footer() {
               >
                 M
               </span>
-              <span>Mikael Macabali</span>
+              <span>{brandName}</span>
             </Link>
             <p
               style={{
@@ -72,9 +107,7 @@ export default function Footer() {
                 maxWidth: '38ch',
               }}
             >
-              Full-stack developer building thoughtful applications with modern
-              web technologies. Based in Manila, working remotely with teams
-              worldwide.
+              {description}
             </p>
           </div>
 
@@ -94,7 +127,7 @@ export default function Footer() {
               Work
             </h5>
             <ul style={{ listStyle: 'none' }}>
-              {navbarConfig.navItems.map((item) => (
+              {navItems.map((item) => (
                 <li key={item.label} style={{ marginBottom: 10 }}>
                   <Link
                     href={item.href}
@@ -142,7 +175,7 @@ export default function Footer() {
               Stack
             </h5>
             <ul style={{ listStyle: 'none' }}>
-              {['TypeScript', 'React', 'Next.js', 'Node.js'].map((tech) => (
+              {stackItems.map((tech) => (
                 <li key={tech} style={{ marginBottom: 10 }}>
                   <span
                     style={{
@@ -211,7 +244,7 @@ export default function Footer() {
               Meta
             </h5>
             <ul style={{ listStyle: 'none' }}>
-              {['Colophon', 'License', 'Source'].map((item) => (
+              {metaItems.map((item) => (
                 <li key={item} style={{ marginBottom: 10 }}>
                   <span
                     style={{
@@ -245,14 +278,14 @@ export default function Footer() {
         >
           <span>
             <span className="pulse-dot" style={{ marginRight: 6 }} />
-            <b style={{ color: 'var(--ink)' }}>Mikael Macabali</b> &middot; MIT
+            <b style={{ color: 'var(--ink)' }}>{brandName}</b> &middot; MIT
             &middot; 2026 / Portfolio / 2026
           </span>
           <span
             style={{ display: 'inline-flex', gap: 24, alignItems: 'center' }}
           >
-            <span>Manila / Remote</span>
-            <span>14.55&deg; N &middot; 121.02&deg; E</span>
+            <span>{location}</span>
+            <span>{coordinates}</span>
             <span style={{ color: 'var(--coral)' }}>&hearts; MMXXVI</span>
           </span>
         </div>
@@ -282,7 +315,7 @@ export default function Footer() {
               paddingBottom: '0.18em',
             }}
           >
-            Mikael{' '}
+            {brandName.split(' ')[0]}{' '}
             <em
               style={{
                 fontFamily: 'var(--serif)',
@@ -291,7 +324,7 @@ export default function Footer() {
                 color: 'var(--coral)',
               }}
             >
-              Macabali
+              {brandName.split(' ').slice(1).join(' ')}
             </em>
             .
           </div>

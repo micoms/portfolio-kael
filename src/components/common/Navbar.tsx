@@ -1,6 +1,5 @@
 'use client';
 
-import { navbarConfig } from '@/config/Navbar';
 import { Menu } from 'lucide-react';
 import { Link } from 'next-view-transitions';
 import React, { useEffect, useState } from 'react';
@@ -16,7 +15,30 @@ import {
 } from '../ui/sheet';
 import Container from './Container';
 
-export default function Navbar() {
+interface NavItem {
+  label: string;
+  href: string;
+}
+
+interface NavbarProps {
+  brandName?: string;
+  title?: string;
+  location?: string;
+  githubUrl?: string;
+  navItems?: NavItem[];
+}
+
+export default function Navbar({
+  brandName = 'Mikael Macabali',
+  title = 'Full-Stack Developer',
+  location = 'Manila / Remote',
+  githubUrl = 'https://github.com/mikaelmacabali',
+  navItems = [
+    { label: 'Work', href: '/work-experience' },
+    { label: 'Blogs', href: '/blog' },
+    { label: 'Projects', href: '/projects' },
+  ],
+}: NavbarProps) {
   const [isHidden, setIsHidden] = useState(false);
   const [lastY, setLastY] = useState(0);
 
@@ -88,7 +110,7 @@ export default function Navbar() {
             >
               M
             </span>
-            <span>Mikael Macabali</span>
+            <span>{brandName}</span>
             <span
               className="brand-meta"
               style={{
@@ -110,9 +132,9 @@ export default function Navbar() {
                   fontWeight: 600,
                 }}
               >
-                Full-Stack Developer
+                {title}
               </b>
-              Manila / Remote
+              {location}
             </span>
           </Link>
 
@@ -121,7 +143,7 @@ export default function Navbar() {
               className="nav-links"
               style={{ display: 'flex', gap: 38, listStyle: 'none' }}
             >
-              {navbarConfig.navItems.map((item) => (
+              {navItems.map((item) => (
                 <li key={item.label}>
                   <Link
                     href={item.href}
@@ -163,7 +185,7 @@ export default function Navbar() {
           >
             <a
               className="nav-cta"
-              href="https://github.com/mikaelmacabali"
+              href={githubUrl}
               target="_blank"
               rel="noreferrer noopener"
               style={{
@@ -237,11 +259,11 @@ export default function Navbar() {
                       color: 'var(--ink)',
                     }}
                   >
-                    Mikael Macabali
+                    {brandName}
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col gap-1 px-4">
-                  {navbarConfig.navItems.map((item) => (
+                  {navItems.map((item) => (
                     <SheetClose asChild key={item.label}>
                       <Link
                         href={item.href}

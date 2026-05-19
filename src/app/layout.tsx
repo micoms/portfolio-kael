@@ -6,6 +6,7 @@ import ScrollReveal from '@/components/common/ScrollReveal';
 import SideRails from '@/components/common/SideRails';
 import Topbar from '@/components/common/Topbar';
 import { generateMetadata as getMetadata } from '@/config/Meta';
+import { getSiteConfig } from '@/lib/db/settings';
 import ReactLenis from 'lenis/react';
 import { ViewTransitions } from 'next-view-transitions';
 
@@ -13,11 +14,30 @@ import './globals.css';
 
 export const metadata = getMetadata('/');
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const navbarConfig = (await getSiteConfig('navbar')) as {
+    brandName?: string;
+    title?: string;
+    location?: string;
+    githubUrl?: string;
+    navItems?: { label: string; href: string }[];
+  } | null;
+
+  const footerConfig = (await getSiteConfig('footer')) as {
+    brandName?: string;
+    description?: string;
+    navItems?: { label: string; href: string }[];
+    socialLinks?: { name: string; href: string }[];
+    stackItems?: string[];
+    metaItems?: string[];
+    location?: string;
+    coordinates?: string;
+  } | null;
+
   return (
     <ViewTransitions>
       <html lang="en">
@@ -44,9 +64,24 @@ export default function RootLayout({
             <div className="shell">
               <SideRails />
               <Topbar />
-              <Navbar />
+              <Navbar
+                brandName={navbarConfig?.brandName}
+                title={navbarConfig?.title}
+                location={navbarConfig?.location}
+                githubUrl={navbarConfig?.githubUrl}
+                navItems={navbarConfig?.navItems}
+              />
               {children}
-              <Footer />
+              <Footer
+                brandName={footerConfig?.brandName}
+                description={footerConfig?.description}
+                navItems={footerConfig?.navItems}
+                socialLinks={footerConfig?.socialLinks}
+                stackItems={footerConfig?.stackItems}
+                metaItems={footerConfig?.metaItems}
+                location={footerConfig?.location}
+                coordinates={footerConfig?.coordinates}
+              />
             </div>
             <ClientShell />
             <UmamiAnalytics />
