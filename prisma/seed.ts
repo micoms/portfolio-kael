@@ -170,7 +170,358 @@ async function main() {
     update: {},
     create: {
       key: 'footer',
-      value: { text: 'Built with Next.js, Tailwind CSS, and a lot of ☕' },
+      value: {
+        brandName: 'Mikael Macabali',
+        description:
+          'Full-stack developer building thoughtful applications with modern web technologies. Based in Manila, working remotely with teams worldwide.',
+        navItems: [
+          { label: 'Work', href: '/work-experience' },
+          { label: 'Blogs', href: '/blog' },
+          { label: 'Projects', href: '/projects' },
+        ],
+        socialLinks: [
+          { name: 'GitHub', href: 'https://github.com/mikaelmacabali' },
+          { name: 'LinkedIn', href: 'https://linkedin.com/in/mikaelmacabali' },
+          { name: 'X / Twitter', href: 'https://x.com/mikaelmacabali' },
+        ],
+        stackItems: ['TypeScript', 'React', 'Next.js', 'Node.js'],
+        metaItems: ['Colophon', 'License', 'Source'],
+        location: 'Manila / Remote',
+        coordinates: '14.55\u00b0 N \u00b7 121.02\u00b0 E',
+      },
+    },
+  });
+
+  // Seed Navbar config
+  await prisma.siteConfig.upsert({
+    where: { key: 'navbar' },
+    update: {},
+    create: {
+      key: 'navbar',
+      value: {
+        brandName: 'Mikael Macabali',
+        title: 'Full-Stack Developer',
+        location: 'Manila / Remote',
+        githubUrl: 'https://github.com/mikaelmacabali',
+        navItems: [
+          { label: 'Work', href: '/work-experience' },
+          { label: 'Blogs', href: '/blog' },
+          { label: 'Projects', href: '/projects' },
+        ],
+      },
+    },
+  });
+
+  // Seed Topbar config
+  await prisma.siteConfig.upsert({
+    where: { key: 'topbar' },
+    update: {},
+    create: {
+      key: 'topbar',
+      value: {
+        version: 'M / 2026',
+        categories: 'Code \u00b7 Design \u00b7 Engineering',
+        license: 'MIT \u00b7 Made on Earth',
+        githubUrl: 'https://github.com/mikaelmacabali',
+        statusText: 'Open \u00b7 v1.0',
+        languages: 'EN \u00b7 PH',
+      },
+    },
+  });
+
+  // Seed SideRails config
+  await prisma.siteConfig.upsert({
+    where: { key: 'siderails' },
+    update: {},
+    create: {
+      key: 'siderails',
+      value: {
+        rightText: 'Mikael Macabali \u2014 Portfolio \u00b7 2026 \u00b7 MIT',
+        leftText: 'Full-Stack \u00b7 Design \u00b7 Engineering \u00b7 Manila',
+      },
+    },
+  });
+
+  // Seed Resume config
+  await prisma.siteConfig.upsert({
+    where: { key: 'resume' },
+    update: {},
+    create: {
+      key: 'resume',
+      value: {
+        url: 'https://drive.google.com/file/d/1ormIiMVpWGAMOZ3FZVj_XrKPkEmPlPQj/preview',
+      },
+    },
+  });
+
+  // Seed Contact config
+  await prisma.siteConfig.upsert({
+    where: { key: 'contact' },
+    update: {},
+    create: {
+      key: 'contact',
+      value: {
+        title: 'Contact',
+        description:
+          'Get in touch with me. I will get back to you as soon as possible.',
+      },
+    },
+  });
+
+  // Seed Testimonial config
+  await prisma.siteConfig.upsert({
+    where: { key: 'testimonial' },
+    update: {},
+    create: {
+      key: 'testimonial',
+      value: {
+        quote:
+          'Mikael has a rare ability to take a vague product idea and turn it into a shippable, well-architected application \u2014 fast, communicative, and a genuine pleasure to work with.',
+        author: 'Sofia Reyes',
+        role: 'Product Lead \u00b7 Northstar Studio',
+        partners: [
+          { name: 'TypeScript', category: 'Language' },
+          { name: 'React', category: 'Frontend' },
+          { name: 'Next.js', category: 'Framework' },
+          { name: 'Node.js', category: 'Runtime' },
+          { name: 'PostgreSQL', category: 'Database' },
+          { name: 'Docker', category: 'DevOps' },
+        ],
+      },
+    },
+  });
+
+  // Seed Capabilities config
+  await prisma.siteConfig.upsert({
+    where: { key: 'capabilities' },
+    update: {},
+    create: {
+      key: 'capabilities',
+      value: [
+        {
+          num: '01',
+          tag: 'Frontend',
+          title: 'Frontend Engineering',
+          desc: 'Building performant, accessible UIs with React, Next.js, and modern CSS. Pixel-perfect implementations from design files.',
+        },
+        {
+          num: '02',
+          tag: 'Backend',
+          title: 'API & Backend',
+          desc: 'Designing RESTful and GraphQL APIs, database schemas, and server-side logic with Node.js, Express, and PostgreSQL.',
+        },
+        {
+          num: '03',
+          tag: 'Design',
+          title: 'UI/UX & Design Systems',
+          desc: 'Creating cohesive design systems, component libraries, and user flows that scale across products.',
+        },
+        {
+          num: '04',
+          tag: 'DevOps',
+          title: 'DevOps & Deployment',
+          desc: 'CI/CD pipelines, Docker containerization, cloud deployments on Vercel, AWS, and Netlify.',
+        },
+      ],
+    },
+  });
+
+  // Seed Method config
+  await prisma.siteConfig.upsert({
+    where: { key: 'method' },
+    update: {},
+    create: {
+      key: 'method',
+      value: [
+        {
+          num: '01',
+          title: 'Discover',
+          desc: 'Understanding requirements, user needs, and technical constraints through research and stakeholder interviews.',
+        },
+        {
+          num: '02',
+          title: 'Design',
+          desc: 'Translating requirements into wireframes, prototypes, and system architecture before writing code.',
+        },
+        {
+          num: '03',
+          title: 'Build',
+          desc: 'Iterative development with regular check-ins, code reviews, and incremental deliveries.',
+        },
+        {
+          num: '04',
+          title: 'Ship',
+          desc: 'Deployment, monitoring, and post-launch support with a focus on reliability and performance.',
+        },
+      ],
+    },
+  });
+
+  // Seed Labs config
+  await prisma.siteConfig.upsert({
+    where: { key: 'labs' },
+    update: {},
+    create: {
+      key: 'labs',
+      value: [
+        {
+          num: '01',
+          year: '2024',
+          badge: 'Web App',
+          title: 'Portfolio v2',
+          desc: 'A complete rebuild of my portfolio using Next.js, Tailwind, and a custom CMS.',
+          category: 'Web App',
+        },
+        {
+          num: '02',
+          year: '2024',
+          badge: 'CLI',
+          title: 'Dev CLI',
+          desc: 'A command-line tool for automating common development workflows.',
+          category: 'CLI',
+        },
+        {
+          num: '03',
+          year: '2023',
+          badge: 'Design',
+          title: 'Design System',
+          desc: 'A comprehensive design system with tokens, components, and documentation.',
+          category: 'Design',
+        },
+        {
+          num: '04',
+          year: '2023',
+          badge: 'Web App',
+          title: 'Chat Widget',
+          desc: 'An embeddable AI chat widget for portfolio websites.',
+          category: 'Web App',
+        },
+        {
+          num: '05',
+          year: '2023',
+          badge: 'CLI',
+          title: 'Icon Generator',
+          desc: 'A tool for generating icon components from SVG files.',
+          category: 'CLI',
+        },
+      ],
+    },
+  });
+
+  // Seed Journey config
+  await prisma.siteConfig.upsert({
+    where: { key: 'journey' },
+    update: {},
+    create: {
+      key: 'journey',
+      value: [
+        {
+          name: 'My Journey',
+          desc: 'Overview of my learning and career journey.',
+          href: '/journey',
+        },
+        {
+          name: 'Certificates & Achievements',
+          desc: 'A curated list of certificates and achievements.',
+          href: '/journey/certificates',
+        },
+      ],
+    },
+  });
+
+  // Seed Setup Links config
+  await prisma.siteConfig.upsert({
+    where: { key: 'setupLinks' },
+    update: {},
+    create: {
+      key: 'setupLinks',
+      value: [
+        {
+          name: 'Gears Used',
+          desc: 'Devices, extensions, and software I use daily.',
+          href: '/gears',
+        },
+        {
+          name: 'VS Code / Cursor Setup',
+          desc: 'My complete editor configuration and extensions.',
+          href: '/setup',
+        },
+      ],
+    },
+  });
+
+  // Seed Marquee config
+  await prisma.siteConfig.upsert({
+    where: { key: 'marquee' },
+    update: {},
+    create: {
+      key: 'marquee',
+      value: {
+        cities: [
+          'Manila',
+          'Tokyo',
+          'San Francisco',
+          'London',
+          'Berlin',
+          'Singapore',
+          'Sydney',
+          'Toronto',
+          'Seoul',
+          'Amsterdam',
+          'Dubai',
+          'New York',
+        ],
+        contributors: [
+          { handle: '@mikaelmacabali', role: 'Full-Stack Dev' },
+          { handle: '@open-source', role: 'Community' },
+          { handle: '@design-systems', role: 'UI/UX' },
+          { handle: '@typescript', role: 'Language' },
+          { handle: '@react', role: 'Frontend' },
+          { handle: '@nextjs', role: 'Framework' },
+        ],
+      },
+    },
+  });
+
+  // Seed GitHub config
+  await prisma.siteConfig.upsert({
+    where: { key: 'github' },
+    update: {},
+    create: {
+      key: 'github',
+      value: {
+        username: 'micoms',
+        apiUrl: 'https://github-contributions-api.deno.dev',
+      },
+    },
+  });
+
+  // Seed Chat config
+  await prisma.siteConfig.upsert({
+    where: { key: 'chat' },
+    update: {},
+    create: {
+      key: 'chat',
+      value: {
+        greeting:
+          "Hello! I'm Mikael's Portfolio Assistant. How can I help you?",
+        placeholder: 'Ask me about my work and experience...',
+        suggestions: [
+          'What technologies do you work with?',
+          'Tell me about your recent projects',
+          'How can I contact you for work?',
+        ],
+      },
+    },
+  });
+
+  // Seed Cat config
+  await prisma.siteConfig.upsert({
+    where: { key: 'cat' },
+    update: {},
+    create: {
+      key: 'cat',
+      value: { enabled: true },
     },
   });
 
