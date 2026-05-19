@@ -130,6 +130,21 @@ const ALLOWED_SETTINGS_KEYS = [
   'socialLinks',
   'cta',
   'footer',
+  'navbar',
+  'topbar',
+  'siderails',
+  'resume',
+  'contact',
+  'testimonial',
+  'capabilities',
+  'method',
+  'labs',
+  'journey',
+  'setupLinks',
+  'marquee',
+  'github',
+  'chat',
+  'cat',
 ] as const;
 
 export const settingsUpdateSchema = z.record(
