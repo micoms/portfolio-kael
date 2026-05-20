@@ -6,18 +6,68 @@ import React, { useEffect, useState } from 'react';
 
 type ConfigValue = Record<string, unknown>;
 
+function Toast({
+  message,
+  type,
+  onClose,
+}: {
+  message: string;
+  type: 'success' | 'error';
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const t = setTimeout(onClose, 3000);
+    return () => clearTimeout(t);
+  }, [onClose]);
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        bottom: 24,
+        right: 24,
+        zIndex: 9999,
+        padding: '12px 20px',
+        borderRadius: 10,
+        background: type === 'success' ? 'var(--olive)' : 'var(--coral)',
+        color: '#fff',
+        fontFamily: 'var(--sans)',
+        fontSize: 13,
+        fontWeight: 500,
+        boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+        animation: 'fadeIn 0.2s ease',
+      }}
+    >
+      {type === 'success' ? '\u2713 ' : '\u2717 '}
+      {message}
+    </div>
+  );
+}
+
 export default function SettingsPage() {
   const [configs, setConfigs] = useState<Record<string, ConfigValue>>({});
+  const [originalConfigs, setOriginalConfigs] = useState<
+    Record<string, ConfigValue>
+  >({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('hero');
+  const [toast, setToast] = useState<{
+    message: string;
+    type: 'success' | 'error';
+  } | null>(null);
 
   useEffect(() => {
     fetch('/api/admin/settings')
       .then((r) => r.json())
       .then((d) => {
         setConfigs(d);
+        setOriginalConfigs(d);
         setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+        setToast({ message: 'Failed to load settings', type: 'error' });
       });
   }, []);
 
@@ -25,54 +75,86 @@ export default function SettingsPage() {
     setConfigs((prev) => ({ ...prev, [key]: value }));
   };
 
+  const isDirty = JSON.stringify(configs) !== JSON.stringify(originalConfigs);
+
   const handleSave = async () => {
     setSaving(true);
-    const res = await fetch('/api/admin/settings', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(configs),
-    });
+    try {
+      const res = await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(configs),
+      });
+      if (res.ok) {
+        setOriginalConfigs(configs);
+        setToast({ message: 'Settings saved successfully!', type: 'success' });
+      } else {
+        const err = await res.json();
+        setToast({
+          message: err.error || 'Failed to save settings',
+          type: 'error',
+        });
+      }
+    } catch {
+      setToast({ message: 'Network error - please try again', type: 'error' });
+    }
     setSaving(false);
-    if (res.ok) alert('Settings saved!');
   };
 
   if (loading)
     return (
       <div
         style={{
-          fontFamily: 'var(--sans)',
-          fontSize: 13,
-          color: 'var(--ink-faint)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '50vh',
         }}
       >
-        Loading...
+        <div
+          style={{
+            fontFamily: 'var(--sans)',
+            fontSize: 13,
+            color: 'var(--ink-faint)',
+          }}
+        >
+          Loading settings...
+        </div>
       </div>
     );
 
   const tabs = [
-    { key: 'hero', label: 'Hero' },
-    { key: 'about', label: 'About' },
-    { key: 'navbar', label: 'Navbar' },
-    { key: 'footer', label: 'Footer' },
-    { key: 'topbar', label: 'Topbar' },
-    { key: 'cta', label: 'CTA' },
-    { key: 'resume', label: 'Resume' },
-    { key: 'contact', label: 'Contact' },
-    { key: 'testimonial', label: 'Testimonial' },
-    { key: 'capabilities', label: 'Capabilities' },
-    { key: 'method', label: 'Method' },
-    { key: 'labs', label: 'Labs' },
-    { key: 'journey', label: 'Journey' },
-    { key: 'setupLinks', label: 'Setup Links' },
-    { key: 'marquee', label: 'Marquee' },
-    { key: 'github', label: 'GitHub' },
-    { key: 'siderails', label: 'Side Rails' },
-    { key: 'chat', label: 'Chat Bot' },
-    { key: 'cat', label: 'Cat' },
+    { key: 'hero', label: 'Hero', icon: '\u2b50' },
+    { key: 'about', label: 'About', icon: '\u2139' },
+    { key: 'navbar', label: 'Navbar', icon: '\u2630' },
+    { key: 'footer', label: 'Footer', icon: '\u2b07' },
+    { key: 'topbar', label: 'Topbar', icon: '\u2594' },
+    { key: 'cta', label: 'CTA', icon: '\ud83d\udce3' },
+    { key: 'resume', label: 'Resume', icon: '\ud83d\udcc4' },
+    { key: 'contact', label: 'Contact', icon: '\u2709' },
+    { key: 'testimonial', label: 'Testimonial', icon: '\ud83d\udcac' },
+    { key: 'capabilities', label: 'Capabilities', icon: '\u2699' },
+    { key: 'method', label: 'Method', icon: '\ud83d\udd04' },
+    { key: 'labs', label: 'Labs', icon: '\ud83d\udcdd' },
+    { key: 'journey', label: 'Journey', icon: '\ud83d\ude80' },
+    { key: 'setupLinks', label: 'Setup', icon: '\ud83d\udd27' },
+    { key: 'marquee', label: 'Marquee', icon: '\u2728' },
+    { key: 'github', label: 'GitHub', icon: '\ud83d\udc31' },
+    { key: 'siderails', label: 'Side Rails', icon: '\u2194' },
+    { key: 'chat', label: 'Chat Bot', icon: '\ud83e\udd16' },
+    { key: 'cat', label: 'Cat', icon: '\ud83d\udc31' },
   ];
 
   return (
     <div>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+
       <div
         style={{
           display: 'flex',
@@ -101,16 +183,31 @@ export default function SettingsPage() {
               marginTop: 4,
             }}
           >
-            Configure all aspects of your portfolio.
+            Customize every aspect of your portfolio website.
           </p>
         </div>
-        <button
-          className="btn btn-primary"
-          onClick={handleSave}
-          disabled={saving}
-        >
-          {saving ? 'Saving...' : 'Save All'}
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          {isDirty && (
+            <span
+              style={{
+                fontFamily: 'var(--sans)',
+                fontSize: 11,
+                color: 'var(--mustard)',
+                fontWeight: 600,
+              }}
+            >
+              Unsaved changes
+            </span>
+          )}
+          <button
+            className="btn btn-primary"
+            onClick={handleSave}
+            disabled={saving || !isDirty}
+            style={{ opacity: saving || !isDirty ? 0.6 : 1 }}
+          >
+            {saving ? 'Saving...' : isDirty ? 'Save Changes' : 'Saved'}
+          </button>
+        </div>
       </div>
 
       {/* Tab navigation */}
@@ -118,10 +215,12 @@ export default function SettingsPage() {
         style={{
           display: 'flex',
           flexWrap: 'wrap',
-          gap: 4,
+          gap: 2,
           marginBottom: 24,
-          borderBottom: '1px solid var(--line)',
-          paddingBottom: 12,
+          background: 'var(--bone)',
+          borderRadius: 10,
+          padding: 4,
+          border: '1px solid var(--line)',
         }}
       >
         {tabs.map((tab) => (
@@ -129,25 +228,32 @@ export default function SettingsPage() {
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
             style={{
-              padding: '6px 14px',
-              borderRadius: 6,
+              padding: '8px 14px',
+              borderRadius: 8,
               border: 'none',
-              background: activeTab === tab.key ? 'var(--ink)' : 'transparent',
-              color: activeTab === tab.key ? 'var(--paper)' : 'var(--ink-mute)',
+              background:
+                activeTab === tab.key ? 'var(--paper)' : 'transparent',
+              color: activeTab === tab.key ? 'var(--ink)' : 'var(--ink-mute)',
               fontFamily: 'var(--sans)',
               fontSize: 12,
-              fontWeight: 500,
+              fontWeight: activeTab === tab.key ? 600 : 400,
               cursor: 'pointer',
               transition: 'all 0.15s ease',
+              boxShadow:
+                activeTab === tab.key ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
             }}
           >
+            <span style={{ fontSize: 14 }}>{tab.icon}</span>
             {tab.label}
           </button>
         ))}
       </div>
 
       {/* Tab content */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         {activeTab === 'hero' && (
           <HeroSection
             config={configs.hero || {}}
@@ -279,9 +385,11 @@ export default function SettingsPage() {
 
 function Section({
   title,
+  description,
   children,
 }: {
   title: string;
+  description?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -293,17 +401,31 @@ function Section({
         border: '1px solid var(--line)',
       }}
     >
-      <h2
-        style={{
-          fontFamily: 'var(--sans)',
-          fontWeight: 700,
-          fontSize: 15,
-          color: 'var(--ink)',
-          marginBottom: 16,
-        }}
-      >
-        {title}
-      </h2>
+      <div style={{ marginBottom: 16 }}>
+        <h2
+          style={{
+            fontFamily: 'var(--sans)',
+            fontWeight: 700,
+            fontSize: 15,
+            color: 'var(--ink)',
+            margin: 0,
+          }}
+        >
+          {title}
+        </h2>
+        {description && (
+          <p
+            style={{
+              fontFamily: 'var(--body)',
+              fontSize: 12,
+              color: 'var(--ink-faint)',
+              marginTop: 4,
+            }}
+          >
+            {description}
+          </p>
+        )}
+      </div>
       {children}
     </div>
   );
@@ -315,12 +437,14 @@ function Field({
   onChange,
   textarea,
   placeholder,
+  helpText,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   textarea?: boolean;
   placeholder?: string;
+  helpText?: string;
 }) {
   return (
     <div>
@@ -352,6 +476,18 @@ function Field({
           placeholder={placeholder}
         />
       )}
+      {helpText && (
+        <p
+          style={{
+            fontFamily: 'var(--body)',
+            fontSize: 11,
+            color: 'var(--ink-faint)',
+            marginTop: 2,
+          }}
+        >
+          {helpText}
+        </p>
+      )}
     </div>
   );
 }
@@ -368,17 +504,22 @@ function HeroSection({
     (c.skills as { name: string; href: string; component: string }[]) || [];
   return (
     <>
-      <Section title="Hero Content">
+      <Section
+        title="Hero Content"
+        description="Main hero section on the landing page."
+      >
         <div className="admin-grid-3" style={{ marginBottom: 16 }}>
           <Field
             label="Name"
             value={(c.name as string) || ''}
             onChange={(v) => onChange({ ...c, name: v })}
+            placeholder="Mikael"
           />
           <Field
             label="Title"
             value={(c.title as string) || ''}
             onChange={(v) => onChange({ ...c, title: v })}
+            placeholder="A Full Stack Web Developer"
           />
           <div>
             <label
@@ -406,9 +547,13 @@ function HeroSection({
           value={(c.descriptionTemplate as string) || ''}
           onChange={(v) => onChange({ ...c, descriptionTemplate: v })}
           textarea
+          helpText="Use {skills:0}, {skills:1} etc. to reference skills. Use <b>text</b> for bold."
         />
       </Section>
-      <Section title="Hero Skills">
+      <Section
+        title="Hero Skills"
+        description="Skills shown in the hero description."
+      >
         {skills.map((skill, i) => (
           <div
             key={i}
@@ -435,7 +580,7 @@ function HeroSection({
                 ns[i] = { ...ns[i], href: e.target.value };
                 onChange({ ...c, skills: ns });
               }}
-              placeholder="Href"
+              placeholder="URL"
             />
             <IconPicker
               value={skill.component || ''}
@@ -474,7 +619,7 @@ function HeroSection({
           className="btn btn-ghost"
           style={{ fontSize: 12, padding: '6px 14px' }}
         >
-          Add Skill
+          + Add Skill
         </button>
       </Section>
     </>
@@ -490,18 +635,23 @@ function AboutSection({
 }) {
   const c = config as Record<string, unknown>;
   return (
-    <Section title="About">
+    <Section
+      title="About Section"
+      description="The about section on the landing page."
+    >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <Field
           label="Name"
           value={(c.name as string) || ''}
           onChange={(v) => onChange({ ...c, name: v })}
+          placeholder="Mikael Macabali"
         />
         <Field
           label="Description"
           value={(c.description as string) || ''}
           onChange={(v) => onChange({ ...c, description: v })}
           textarea
+          placeholder="A short bio about yourself..."
         />
       </div>
     </Section>
@@ -519,7 +669,10 @@ function NavbarSection({
   const navItems = (c.navItems as { label: string; href: string }[]) || [];
   return (
     <>
-      <Section title="Navbar Brand">
+      <Section
+        title="Navbar Brand"
+        description="Brand name and metadata shown in the navigation bar."
+      >
         <div className="admin-grid-4">
           <Field
             label="Brand Name"
@@ -547,7 +700,10 @@ function NavbarSection({
           />
         </div>
       </Section>
-      <Section title="Navigation Items">
+      <Section
+        title="Navigation Items"
+        description="Links shown in the navbar and footer."
+      >
         {navItems.map((item, i) => (
           <div
             key={i}
@@ -574,7 +730,7 @@ function NavbarSection({
                 ns[i] = { ...ns[i], href: e.target.value };
                 onChange({ ...c, navItems: ns });
               }}
-              placeholder="Href"
+              placeholder="/path"
             />
             <button
               onClick={() => {
@@ -602,7 +758,7 @@ function NavbarSection({
           className="btn btn-ghost"
           style={{ fontSize: 12, padding: '6px 14px' }}
         >
-          Add Nav Item
+          + Add Nav Item
         </button>
       </Section>
     </>
@@ -619,10 +775,12 @@ function FooterSection({
   const c = config as Record<string, unknown>;
   const socialLinks = (c.socialLinks as { name: string; href: string }[]) || [];
   const stackItems = (c.stackItems as string[]) || [];
-  const metaItems = (c.metaItems as string[]) || [];
   return (
     <>
-      <Section title="Footer Brand">
+      <Section
+        title="Footer Brand"
+        description="Brand info shown in the footer."
+      >
         <div className="admin-grid-2" style={{ marginBottom: 12 }}>
           <Field
             label="Brand Name"
@@ -648,7 +806,7 @@ function FooterSection({
             label="Coordinates"
             value={(c.coordinates as string) || ''}
             onChange={(v) => onChange({ ...c, coordinates: v })}
-            placeholder="14.55° N · 121.02° E"
+            placeholder="14.55\u00b0 N \u00b7 121.02\u00b0 E"
           />
         </div>
       </Section>
@@ -710,10 +868,10 @@ function FooterSection({
           className="btn btn-ghost"
           style={{ fontSize: 12, padding: '6px 14px' }}
         >
-          Add Social Link
+          + Add Social Link
         </button>
       </Section>
-      <Section title="Stack Items">
+      <Section title="Tech Stack">
         <div
           style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 8 }}
         >
@@ -751,37 +909,10 @@ function FooterSection({
             </span>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <input
-            id="stack-input"
-            placeholder="Add stack item..."
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                const val = (e.target as HTMLInputElement).value.trim();
-                if (val) {
-                  onChange({ ...c, stackItems: [...stackItems, val] });
-                  (e.target as HTMLInputElement).value = '';
-                }
-              }
-            }}
-          />
-          <button
-            onClick={() => {
-              const el = document.getElementById(
-                'stack-input',
-              ) as HTMLInputElement;
-              const val = el?.value?.trim();
-              if (val) {
-                onChange({ ...c, stackItems: [...stackItems, val] });
-                el.value = '';
-              }
-            }}
-            className="btn btn-ghost"
-            style={{ fontSize: 12, padding: '6px 14px' }}
-          >
-            Add
-          </button>
-        </div>
+        <AddItemRow
+          placeholder="Add tech..."
+          onAdd={(val) => onChange({ ...c, stackItems: [...stackItems, val] })}
+        />
       </Section>
     </>
   );
@@ -796,7 +927,10 @@ function TopbarSection({
 }) {
   const c = config as Record<string, unknown>;
   return (
-    <Section title="Topbar">
+    <Section
+      title="Top Bar"
+      description="The thin bar at the very top of the page."
+    >
       <div className="admin-grid-3">
         <Field
           label="Version"
@@ -808,31 +942,30 @@ function TopbarSection({
           label="Categories"
           value={(c.categories as string) || ''}
           onChange={(v) => onChange({ ...c, categories: v })}
-          placeholder="Code · Design · Engineering"
+          placeholder="Code \u00b7 Design \u00b7 Engineering"
         />
         <Field
           label="License"
           value={(c.license as string) || ''}
           onChange={(v) => onChange({ ...c, license: v })}
-          placeholder="MIT · Made on Earth"
+          placeholder="MIT \u00b7 Made on Earth"
         />
         <Field
           label="GitHub URL"
           value={(c.githubUrl as string) || ''}
           onChange={(v) => onChange({ ...c, githubUrl: v })}
-          placeholder="https://github.com/..."
         />
         <Field
           label="Status Text"
           value={(c.statusText as string) || ''}
           onChange={(v) => onChange({ ...c, statusText: v })}
-          placeholder="Open · v1.0"
+          placeholder="Open \u00b7 v1.0"
         />
         <Field
           label="Languages"
           value={(c.languages as string) || ''}
           onChange={(v) => onChange({ ...c, languages: v })}
-          placeholder="EN · PH"
+          placeholder="EN \u00b7 PH"
         />
       </div>
     </Section>
@@ -848,13 +981,16 @@ function CtaSection({
 }) {
   const c = config as Record<string, unknown>;
   return (
-    <Section title="CTA Section">
+    <Section
+      title="CTA Section"
+      description="The call-to-action section near the bottom of the landing page."
+    >
       <div className="admin-grid-2" style={{ marginBottom: 12 }}>
         <Field
           label="Email"
           value={(c.email as string) || ''}
           onChange={(v) => onChange({ ...c, email: v })}
-          placeholder="mikaelmacabali@gmail.com"
+          placeholder="hello@example.com"
         />
         <Field
           label="Title"
@@ -881,7 +1017,10 @@ function ResumeSection({
 }) {
   const c = config as Record<string, unknown>;
   return (
-    <Section title="Resume">
+    <Section
+      title="Resume"
+      description="Google Drive embed URL for your resume."
+    >
       <Field
         label="Google Drive Embed URL"
         value={(c.url as string) || ''}
@@ -901,7 +1040,10 @@ function ContactSection({
 }) {
   const c = config as Record<string, unknown>;
   return (
-    <Section title="Contact Page">
+    <Section
+      title="Contact Page"
+      description="Content shown on the /contact page."
+    >
       <div className="admin-grid-2" style={{ marginBottom: 12 }}>
         <Field
           label="Title"
@@ -931,7 +1073,10 @@ function TestimonialSection({
   const partners = (c.partners as { name: string; category: string }[]) || [];
   return (
     <>
-      <Section title="Testimonial">
+      <Section
+        title="Testimonial"
+        description="Featured testimonial on the landing page."
+      >
         <Field
           label="Quote"
           value={(c.quote as string) || ''}
@@ -949,11 +1094,14 @@ function TestimonialSection({
             label="Author Role"
             value={(c.role as string) || ''}
             onChange={(v) => onChange({ ...c, role: v })}
-            placeholder="Product Lead · Northstar Studio"
+            placeholder="Product Lead \u00b7 Northstar Studio"
           />
         </div>
       </Section>
-      <Section title="Partners / Tech Stack">
+      <Section
+        title="Partners / Tech Stack"
+        description="Technologies shown in the testimonial section."
+      >
         {partners.map((p, i) => (
           <div
             key={i}
@@ -1011,7 +1159,7 @@ function TestimonialSection({
           className="btn btn-ghost"
           style={{ fontSize: 12, padding: '6px 14px' }}
         >
-          Add Partner
+          + Add Partner
         </button>
       </Section>
     </>
@@ -1055,7 +1203,7 @@ function ArraySection({
             {fields.map((field) => (
               <input
                 key={field}
-                value={(item as Record<string, string>)[field] || ''}
+                value={item[field] || ''}
                 onChange={(e) => {
                   const ns = [...items];
                   ns[i] = { ...ns[i], [field]: e.target.value };
@@ -1095,7 +1243,7 @@ function ArraySection({
         className="btn btn-ghost"
         style={{ fontSize: 12, padding: '6px 14px' }}
       >
-        Add {title}
+        + Add Item
       </button>
     </Section>
   );
@@ -1114,7 +1262,10 @@ function MarqueeSection({
     (c.contributors as { handle: string; role: string }[]) || [];
   return (
     <>
-      <Section title="Cities">
+      <Section
+        title="Cities"
+        description="City names shown in the marquee ticker."
+      >
         <div
           style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 8 }}
         >
@@ -1152,37 +1303,10 @@ function MarqueeSection({
             </span>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <input
-            id="city-input"
-            placeholder="Add city..."
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                const val = (e.target as HTMLInputElement).value.trim();
-                if (val) {
-                  onChange({ ...c, cities: [...cities, val] });
-                  (e.target as HTMLInputElement).value = '';
-                }
-              }
-            }}
-          />
-          <button
-            onClick={() => {
-              const el = document.getElementById(
-                'city-input',
-              ) as HTMLInputElement;
-              const val = el?.value?.trim();
-              if (val) {
-                onChange({ ...c, cities: [...cities, val] });
-                el.value = '';
-              }
-            }}
-            className="btn btn-ghost"
-            style={{ fontSize: 12, padding: '6px 14px' }}
-          >
-            Add
-          </button>
-        </div>
+        <AddItemRow
+          placeholder="Add city..."
+          onAdd={(val) => onChange({ ...c, cities: [...cities, val] })}
+        />
       </Section>
       <Section title="Contributors">
         {contributors.map((contrib, i) => (
@@ -1242,7 +1366,7 @@ function MarqueeSection({
           className="btn btn-ghost"
           style={{ fontSize: 12, padding: '6px 14px' }}
         >
-          Add Contributor
+          + Add Contributor
         </button>
       </Section>
     </>
@@ -1258,7 +1382,10 @@ function GithubSection({
 }) {
   const c = config as Record<string, unknown>;
   return (
-    <Section title="GitHub Contribution Graph">
+    <Section
+      title="GitHub Contribution Graph"
+      description="Settings for the GitHub activity section."
+    >
       <div className="admin-grid-2">
         <Field
           label="Username"
@@ -1286,19 +1413,22 @@ function SiderailsSection({
 }) {
   const c = config as Record<string, unknown>;
   return (
-    <Section title="Side Rails">
+    <Section
+      title="Side Rails"
+      description="Text shown on the fixed side rails."
+    >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <Field
           label="Right Rail Text"
           value={(c.rightText as string) || ''}
           onChange={(v) => onChange({ ...c, rightText: v })}
-          placeholder="Mikael Macabali — Portfolio · 2026 · MIT"
+          placeholder="Name \u2014 Portfolio \u00b7 2026 \u00b7 MIT"
         />
         <Field
           label="Left Rail Text"
           value={(c.leftText as string) || ''}
           onChange={(v) => onChange({ ...c, leftText: v })}
-          placeholder="Full-Stack · Design · Engineering · Manila"
+          placeholder="Full-Stack \u00b7 Design \u00b7 Engineering \u00b7 Manila"
         />
       </div>
     </Section>
@@ -1316,20 +1446,23 @@ function ChatSection({
   const suggestions = (c.suggestions as string[]) || [];
   return (
     <>
-      <Section title="Chat Bot">
+      <Section
+        title="Chat Bot"
+        description="The AI chat assistant on the public site."
+      >
         <Field
           label="Greeting Message"
           value={(c.greeting as string) || ''}
           onChange={(v) => onChange({ ...c, greeting: v })}
           textarea
-          placeholder="Hello! I'm Mikael's Portfolio Assistant..."
+          placeholder="Hello! I'm your Portfolio Assistant..."
         />
         <div style={{ marginTop: 12 }}>
           <Field
             label="Input Placeholder"
             value={(c.placeholder as string) || ''}
             onChange={(v) => onChange({ ...c, placeholder: v })}
-            placeholder="Ask me about my work and experience..."
+            placeholder="Ask me about my work..."
           />
         </div>
       </Section>
@@ -1371,37 +1504,12 @@ function ChatSection({
             </span>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <input
-            id="suggestion-input"
-            placeholder="Add suggestion..."
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                const val = (e.target as HTMLInputElement).value.trim();
-                if (val) {
-                  onChange({ ...c, suggestions: [...suggestions, val] });
-                  (e.target as HTMLInputElement).value = '';
-                }
-              }
-            }}
-          />
-          <button
-            onClick={() => {
-              const el = document.getElementById(
-                'suggestion-input',
-              ) as HTMLInputElement;
-              const val = el?.value?.trim();
-              if (val) {
-                onChange({ ...c, suggestions: [...suggestions, val] });
-                el.value = '';
-              }
-            }}
-            className="btn btn-ghost"
-            style={{ fontSize: 12, padding: '6px 14px' }}
-          >
-            Add
-          </button>
-        </div>
+        <AddItemRow
+          placeholder="Add suggestion..."
+          onAdd={(val) =>
+            onChange({ ...c, suggestions: [...suggestions, val] })
+          }
+        />
       </Section>
     </>
   );
@@ -1416,7 +1524,10 @@ function CatSection({
 }) {
   const c = config as Record<string, unknown>;
   return (
-    <Section title="Oneko Cat Easter Egg">
+    <Section
+      title="Oneko Cat Easter Egg"
+      description="The cat that follows your cursor on the site."
+    >
       <label
         style={{
           display: 'flex',
@@ -1435,5 +1546,42 @@ function CatSection({
         Enable cat animation
       </label>
     </Section>
+  );
+}
+
+function AddItemRow({
+  placeholder,
+  onAdd,
+}: {
+  placeholder: string;
+  onAdd: (val: string) => void;
+}) {
+  const [val, setVal] = useState('');
+  return (
+    <div style={{ display: 'flex', gap: 8 }}>
+      <input
+        value={val}
+        onChange={(e) => setVal(e.target.value)}
+        placeholder={placeholder}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && val.trim()) {
+            onAdd(val.trim());
+            setVal('');
+          }
+        }}
+      />
+      <button
+        onClick={() => {
+          if (val.trim()) {
+            onAdd(val.trim());
+            setVal('');
+          }
+        }}
+        className="btn btn-ghost"
+        style={{ fontSize: 12, padding: '6px 14px' }}
+      >
+        + Add
+      </button>
+    </div>
   );
 }

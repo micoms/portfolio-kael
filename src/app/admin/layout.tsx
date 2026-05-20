@@ -1,5 +1,6 @@
 'use client';
 
+import { AiAssistant } from '@/components/admin/AiAssistant';
 import { useSession } from '@/lib/auth-client';
 import { Link } from 'next-view-transitions';
 import { usePathname, useRouter } from 'next/navigation';
@@ -362,6 +363,8 @@ export default function AdminLayout({
           {children}
         </main>
       </div>
+
+      <AiAssistant />
     </div>
   );
 }
